@@ -1,0 +1,101 @@
+1️⃣ สำหรับ ตัวเอง (เจ้าของ repo)
+สร้าง repo และ push ครั้งแรก
+
+สร้างโปรเจกต์ในเครื่อง (เช่น project sa)
+
+เข้าโฟลเดอร์โปรเจกต์
+
+cd "C:\Users\HP\OneDrive\เดสก์ท็อป\project sa"
+
+
+สร้าง Git repository
+
+git init
+
+
+เพิ่มไฟล์ทั้งหมด
+
+git add .
+
+
+commit ไฟล์
+
+git commit -m "Initial commit"
+
+
+เพิ่ม remote (HTTPS)
+
+git remote add origin https://github.com/kittiponglnwza/Project-SA.git
+
+
+ตั้งชื่อ branch เป็น main
+
+git branch -M main
+
+
+push ขึ้น GitHub
+
+git push -u origin main
+
+
+2️⃣ สำหรับ เพื่อน (อยากร่วมแก้โค้ด)
+ขั้นตอน clone repo ของคุณ
+
+เปิด VS Code → เปิด Terminal
+
+เลือกโฟลเดอร์ที่เพื่อนอยากเก็บโปรเจกต์
+
+รันคำสั่ง clone
+
+git clone https://github.com/kittiponglnwza/Project-SA.git
+
+
+จะได้โฟลเดอร์ Project-SA ในเครื่องของเพื่อน
+
+ขั้นตอนแก้ไขและส่งงานกลับ
+
+เข้าโฟลเดอร์โปรเจกต์
+
+cd Project-SA
+
+
+สร้างหรือแก้ไขไฟล์ตามต้องการ
+
+ตรวจสอบสถานะ
+
+git status
+
+
+เพิ่มไฟล์ที่แก้ไข
+
+git add .
+
+
+commit งาน
+
+git commit -m "แก้ไขฟังก์ชัน X / เพิ่มฟีเจอร์ Y"
+
+
+pull ก่อน push เผื่อมีคนแก้ก่อน
+
+git pull origin main
+
+
+push ขึ้น GitHub
+
+git push origin main
+
+
+
+3️⃣ การอัปเดตงานระหว่างเพื่อน ๆ
+
+ก่อนเริ่มแก้โค้ดทุกครั้ง:
+
+git pull origin main
+
+
+หลังแก้เสร็จ:
+
+git add .
+git commit -m "ข้อความ commit"
+git push origin main
