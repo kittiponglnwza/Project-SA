@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Gamepad2, Users, Clock, Monitor, Trophy, Zap } from 'lucide-react';
+import EldenRingImg from "./photo/elden.jpg";
+import FifaImg from "./photo/fifa.jpg";
+import ValoImg from "./photo/valo.jpg";
+import RobloxImg from "./photo/roblox1.jpg";
+import LolImg from "./photo/lol.jpg";
+import CsgoImg from "./photo/csgo.jpg";
+import MinecraftImg from "./photo/minecraft.jpg";
+import LogoImg from "./photo/logo.jpg";
+import PromoImg from "./photo/promo.jpg";
+
 
 const EasyGameCafe = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -34,14 +44,17 @@ const EasyGameCafe = () => {
   }, []);
 
   const games = [
-    { name: 'Elden Ring', players: '12 คนกำลังเล่น', icon: '🎮', image: 'roblox.jpeg' },
-    { name: 'FIFA 24', players: '8 คนกำลังเล่น', icon: '⚽', image: 'roblox.jpeg' },
-    { name: 'Valorant', players: '15 คนกำลังเล่น', icon: '🔫', image: 'roblox.jpeg' },
-    { name: 'Roblox', players: '20 คนกำลังเล่น', icon: '🧩', image: 'roblox.jpeg' },
-    { name: 'League of Legends', players: '18 คนกำลังเล่น', icon: '⚔️', image: 'roblox.jpeg' },
-    { name: 'Counter Strike 2', players: '10 คนกำลังเล่น', icon: '💥', image: 'roblox.jpeg' },
-    { name: 'Minecraft', players: '25 คนกำลังเล่น', icon: '🟫', image: 'roblox.jpeg' }
+    { name: 'Elden Ring', players: '12 คนกำลังเล่น', icon: '🎮', image: EldenRingImg },
+    { name: 'FIFA 24', players: '8 คนกำลังเล่น', icon: '⚽', image: FifaImg },
+    { name: 'Valorant', players: '15 คนกำลังเล่น', icon: '🔫', image: ValoImg },
+    { name: 'Roblox', players: '20 คนกำลังเล่น', icon: '🧱', image: RobloxImg },
+    { name: 'League of Legends', players: '18 คนกำลังเล่น', icon: '⚔️', image: LolImg },
+    { name: 'Counter Strike 2', players: '10 คนกำลังเล่น', icon: '💣', image: CsgoImg },
+    { name: 'Minecraft', players: '25 คนกำลังเล่น', icon: '⛏️', image: MinecraftImg },
   ];
+
+
+
 
   const handleGameSelect = (gameName) => {
     setSelectedGame(gameName);
@@ -148,16 +161,21 @@ const EasyGameCafe = () => {
 
       <div className="flex min-h-screen relative z-10">
         {/* Sidebar */}
-        <aside className={`w-72 bg-slate-800/95 backdrop-blur-lg border-r border-white/10 flex flex-col fixed h-full transition-transform duration-300 z-40 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 shadow-2xl`}>
-          
+        <aside className={`w-72 bg-slate-800/95 backdrop-blur-lg border-r border-white/10 flex flex-col fixed h-full transition-transform duration-300 z-40 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 shadow-2xl`}>
+
           {/* Logo */}
+
           <div className="text-center p-8 border-b border-white/10">
-            <div className="w-44 h-44 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-xl">
-              <Gamepad2 size={80} className="text-white" />
+            <div className="w-44 h-44 mx-auto mb-4 rounded-2xl overflow-hidden">
+              <img
+                src={LogoImg}
+                alt="Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
+
 
           {/* Menu */}
           <nav className="flex-1 p-5">
@@ -171,11 +189,10 @@ const EasyGameCafe = () => {
                 <a
                   key={index}
                   href="#"
-                  className={`block p-4 rounded-r-3xl mr-5 transition-all duration-300 relative overflow-hidden hover:shimmer ${
-                    item.active 
-                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white transform translate-x-3 shadow-lg shadow-blue-500/30' 
-                      : 'text-slate-300 hover:bg-blue-500/10 hover:text-blue-400 hover:translate-x-3'
-                  }`}
+                  className={`block p-4 rounded-r-3xl mr-5 transition-all duration-300 relative overflow-hidden hover:shimmer ${item.active
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white transform translate-x-3 shadow-lg shadow-blue-500/30'
+                    : 'text-slate-300 hover:bg-blue-500/10 hover:text-blue-400 hover:translate-x-3'
+                    }`}
                 >
                   <div className="shimmer"></div>
                   {item.name}
@@ -226,18 +243,20 @@ const EasyGameCafe = () => {
           </div>
 
           {/* News Section */}
+          import RobloxImg from "./photo/roblox.jpeg"; // หรือเปลี่ยนเป็นรูปของคุณ
+
           <section className="mb-12 fade-in">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-blue-600 rounded-full"></div>
               <h2 className="text-3xl font-bold text-white">📢 ข่าวสาร / โปรโมชั่น</h2>
             </div>
-            
+
             <div className="bg-slate-700/95 backdrop-blur-lg rounded-3xl p-8 border border-white/10 shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-2 hover:shadow-blue-500/20 hover:shimmer relative overflow-hidden">
               <div className="shimmer"></div>
               <div className="grid lg:grid-cols-2 gap-8 items-center">
                 <div className="relative group">
-                  <img 
-                    src="roblox.jpeg" 
+                  <img
+                    src={PromoImg}  // ใช้ import
                     alt="Promotion"
                     className="w-full h-48 object-cover rounded-2xl shadow-lg transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
@@ -245,7 +264,7 @@ const EasyGameCafe = () => {
                     }}
                   />
                 </div>
-                
+
                 <div>
                   <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
                     💰 ราคาเล่นต่อชั่วโมง
@@ -266,47 +285,48 @@ const EasyGameCafe = () => {
             </div>
           </section>
 
+
           {/* Games Section */}
           <section className="fade-in">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gradient-to-b from-green-400 to-green-600 rounded-full"></div>
               <h2 className="text-3xl font-bold text-white">🎯 เกมยอดนิยม</h2>
             </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
               {games.map((game, index) => (
                 <div
                   key={index}
                   onClick={() => handleGameSelect(game.name)}
-                  className={`game bg-slate-700/95 rounded-2xl overflow-hidden border-2 border-white/10 transition-all duration-300 cursor-pointer relative hover:transform hover:-translate-y-2 hover:scale-105 hover:shadow-xl hover:shadow-green-500/20 hover:border-green-400 ${
-                    selectedGame === game.name ? 'bg-gradient-to-br from-blue-500 to-blue-600 scale-95' : ''
-                  }`}
+                  className="relative cursor-pointer overflow-hidden rounded-2xl border border-white/20 bg-slate-800/60 shadow-md transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 to-green-600/10 opacity-0 transition-opacity duration-300 hover:opacity-100 z-10"></div>
-                  
-                  <img 
+                  {/* Image */}
+                  <img
                     src={game.image}
                     alt={game.name}
-                    className="w-full h-32 sm:h-40 object-cover transition-all duration-300 hover:scale-110 hover:brightness-110"
+                    className="w-full h-48 sm:h-56 md:h-48 lg:h-52 object-cover transition-transform duration-300"
                     onError={(e) => {
                       e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDIwMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTgwIiBmaWxsPSIjMmQzNzQ4Ii8+CjxyZWN0IHg9IjIwIiB5PSIyMCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIxNDAiIGZpbGw9IiM0OGJiNzgiIHJ4PSIxMCIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHN2ZyB4PSI4NSIgeT0iNzUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iIzQ4YmI3OCI+CiAgPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTAiLz4KPC9zdmc+Cjx0ZXh0IHg9IjEwMCIgeT0iMTYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZTJlOGYwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPkdhbWU8L3RleHQ+Cjwvc3ZnPg==';
                     }}
                   />
-                  
-                  <div className="game-overlay">
-                    <div className="font-bold text-lg mb-1">{game.name}</div>
+
+                  {/* Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white transition-opacity duration-300 opacity-0 hover:opacity-100">
+                    <div className="font-bold text-lg">{game.name}</div>
                     <div className="text-sm opacity-80">{game.players}</div>
                   </div>
                 </div>
               ))}
             </div>
           </section>
+
+
         </main>
       </div>
 
       {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
