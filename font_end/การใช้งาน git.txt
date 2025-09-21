@@ -61,5 +61,5 @@ git pull origin main
 
 หลังแก้เสร็จ:
 git add .
-git commit -m "ข้อความ commit"  git commit -m "สร้างไฟล์ใหม่"
+git commit -m "ข้อความ commit"  git commit -m "แยกหน้าแต่ยังต้องแก้อีกsave ก่อน"
 git push origin main

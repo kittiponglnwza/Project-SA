@@ -3,7 +3,7 @@ import React from 'react';
 import { Crown, Users } from 'lucide-react';
 
 // Import รูปภาพ
-import TableImg from "../photo/table.jpg";
+import TableImg from "../photo/table1.jpg";
 import RoomImg from "../photo/room.jpg";
 
 const SeatCard = ({ seat, status, handleSeatClick }) => {

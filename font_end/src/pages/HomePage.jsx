@@ -11,6 +11,8 @@ import LolImg from "../photo/lol.jpg";
 import CsgoImg from "../photo/csgo.jpg";
 import MinecraftImg from "../photo/minecraft.jpg";
 import PromoImg from "../photo/promo.jpg";
+import BlackmythImg from "../photo/blackmyth.jpg";
+
 
 const HomePage = ({ availableSeats }) => {
   const [selectedGame, setSelectedGame] = useState(null);
@@ -24,6 +26,7 @@ const HomePage = ({ availableSeats }) => {
     { name: 'League of Legends', players: '18 คนกำลังเล่น', icon: '⚔️', image: LolImg },
     { name: 'Counter Strike 2', players: '10 คนกำลังเล่น', icon: '💣', image: CsgoImg },
     { name: 'Minecraft', players: '25 คนกำลังเล่น', icon: '⛏️', image: MinecraftImg },
+    { name: 'Black Myth: Wukong', players: '40 คนกำลังเล่น', icon: '⛏️', image: BlackmythImg },
   ];
 
   // รูปภาพ
