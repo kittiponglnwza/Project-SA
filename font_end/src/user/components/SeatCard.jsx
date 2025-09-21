@@ -2,9 +2,9 @@
 import React from 'react';
 import { Crown, Users } from 'lucide-react';
 
-// Import รูปภาพ
-import TableImg from "../photo/table1.jpg";
-import RoomImg from "../photo/room.jpg";
+// Import รูปภาพ - แก้ path จาก ../photo/ เป็น ../../photo/
+import TableImg from "/photo/table1.jpg";
+import RoomImg from "/photo/room.jpg";
 
 const SeatCard = ({ seat, status, handleSeatClick }) => {
   const isVIP = seat.includes("VIP");

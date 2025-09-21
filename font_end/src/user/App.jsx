@@ -1,18 +1,3 @@
-/*import { useState } from 'react'
-import './App.css'
-
-function App() {
-  return (
-    <>
-      <h1 className=' text-1xl'>
-        Hello
-      </h1>
-    </>
-  )
-}
-
-export default App */
-
 // App.jsx - Main Application Component
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Settings, LogOut } from 'lucide-react';
@@ -24,7 +9,7 @@ import HistoryPage from './pages/HistoryPage';
 import BookingModal from './components/BookingModal';
 
 // Import รูปภาพ
-import LogoImg from "./photo/logo.jpg";
+import LogoImg from "/photo/logo.jpg";
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');

@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import { Plus, Minus, ShoppingCart, Star } from 'lucide-react';
 
-// Import images
-import breadImg from '../photo/bread.jpg';
-import friesImg from '../photo/fries.jpg';
-import popcornImg from '../photo/popcorn.jpg';
-import dumplingImg from '../photo/dumpling.jpg';
-import cokeImg from '../photo/coke.jpg';
-import icedCoffeeImg from '../photo/iced-coffee.jpg';
-import orangeJuiceImg from '../photo/orange-juice.jpg';
-import redbullImg from '../photo/redbull.jpg';
-import mamaImg from '../photo/mama.jpg';
-import friedRiceImg from '../photo/fried-rice.jpg';
-import sandwichImg from '../photo/sandwich.jpg';
-import lunchboxImg from '../photo/lunchbox.jpg';
-import iceCreamImg from '../photo/ice-cream.jpg';
-import chocolateCakeImg from '../photo/chocolate-cake.jpg';
-import donutImg from '../photo/donut.jpg';
-import cookiesImg from '../photo/cookies.jpg';
+// Import images - แก้ path จาก ../photo/ เป็น ../../photo/
+import breadImg from '/photo/bread.jpg';
+import friesImg from '/photo/fries.jpg';
+import popcornImg from '/photo/popcorn.jpg';
+import dumplingImg from '/photo/dumpling.jpg';
+import cokeImg from '/photo/coke.jpg';
+import icedCoffeeImg from '/photo/iced-coffee.jpg';
+import orangeJuiceImg from '/photo/orange-juice.jpg';
+import redbullImg from '/photo/redbull.jpg';
+import mamaImg from '/photo/mama.jpg';
+import friedRiceImg from '/photo/fried-rice.jpg';
+import sandwichImg from '/photo/sandwich.jpg';
+import lunchboxImg from '/photo/lunchbox.jpg';
+import iceCreamImg from '/photo/ice-cream.jpg';
+import chocolateCakeImg from '/photo/chocolate-cake.jpg';
+import donutImg from '/photo/donut.jpg';
+import cookiesImg from '/photo/cookies.jpg';
 
 const FoodPage = () => {
   const [cart, setCart] = useState([]);
