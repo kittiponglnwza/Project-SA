@@ -23,10 +23,6 @@ let UsersService = class UsersService {
     findOne(id) {
         return this.prisma.user.findUnique({
             where: { id },
-            include: {
-                bookingHistory: true,
-                foodHistory: true,
-            },
         });
     }
     update(id, data) {
