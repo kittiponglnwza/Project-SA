@@ -87,10 +87,6 @@ const Sidebar = ({
 
       {/* Bottom menu */}
       <div className="p-6 border-t border-slate-700 space-y-2">
-        <a href="#" className="flex items-center p-3 rounded-xl text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition-all">
-          <Settings size={16} className="mr-3" />
-          Settings
-        </a>
         <button
           type="button"
           onClick={(e) => { e.preventDefault(); if (typeof onLogout === 'function') onLogout(); }}

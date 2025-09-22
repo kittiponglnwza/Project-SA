@@ -19,9 +19,12 @@ const BookingsView = ({
   return (
     <div className="space-y-8">
       <div className="mb-8">
-        <h2 className="text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
-          🎮 จองโต๊ะ
-        </h2>
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-2xl lg:text-3xl" aria-hidden="true">🎮</span>
+          <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+            จองโต๊ะ
+          </h2>
+        </div>
         <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
       </div>
 
