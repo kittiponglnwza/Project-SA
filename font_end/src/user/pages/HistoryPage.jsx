@@ -241,10 +241,13 @@ const HistoryPage = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="mb-8">
-        <h2 className="text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
-          📊 ประวัติการใช้งาน
-        </h2>
-        <div className="w-20 h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-2xl" aria-hidden="true">🕒</span>
+          <h2 className="text-2xl lg:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+            ประวัติการใช้งาน
+          </h2>
+        </div>
+        <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
       </div>
 
       {/* Summary Stats */}

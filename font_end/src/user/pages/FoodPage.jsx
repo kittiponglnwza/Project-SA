@@ -124,9 +124,12 @@ const FoodPage = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="mb-8">
-        <h2 className="text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-r from-orange-400 to-red-600 bg-clip-text text-transparent">
-          🍕 สั่งอาหาร
-        </h2>
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-2xl" aria-hidden="true">🍕</span>
+          <h2 className="text-2xl lg:text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-600 bg-clip-text text-transparent">
+            สั่งอาหาร
+          </h2>
+        </div>
         <div className="w-20 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
       </div>
 
