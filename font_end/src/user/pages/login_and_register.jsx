@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const GamingAuth = ({ onLoginSuccess }) => {
+const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [alert, setAlert] = useState({ type: '', message: '', show: false });
   const [loading, setLoading] = useState(false);
@@ -61,6 +61,16 @@ const GamingAuth = ({ onLoginSuccess }) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
+      // Special admin code: username/email = 515 and password = 515
+      if (loginForm.username === '515' && loginForm.password === '515') {
+        showAlert('success', 'เข้าสู่ระบบผู้ดูแลระบบสำเร็จ! กำลังเปลี่ยนหน้า...');
+        setTimeout(() => {
+          if (typeof onAdminLogin === 'function') onAdminLogin();
+        }, 700);
+        setLoading(false);
+        return;
+      }
+
       // Mock validation - replace with actual API call
       if (loginForm.username === '123' && loginForm.password === '123') {
         showAlert('success', 'เข้าสู่ระบบสำเร็จ! กำลังเปลี่ยนหน้า...');

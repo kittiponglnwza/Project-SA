@@ -29,7 +29,7 @@ import {
     Crown
 } from 'lucide-react';
 
-const AdminPanel = () => {
+const AdminPanel = ({ onLogout }) => {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [loading, setLoading] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -1308,7 +1308,19 @@ const SeatCard = ({ seat, status, handleSeatClick }) => {
                         ))}
 
                         <div className="pt-4 mt-4 border-t border-slate-700">
-                            <button className="w-full text-left flex items-center p-4 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200">
+                            <button
+                                onClick={() => {
+                                    if (typeof onLogout === 'function') {
+                                        onLogout();
+                                    } else {
+                                        // fallback: clear auth and reload to show login
+                                        localStorage.removeItem('auth');
+                                        localStorage.removeItem('isAdmin');
+                                        window.location.reload();
+                                    }
+                                }}
+                                className="w-full text-left flex items-center p-4 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200"
+                            >
                                 <LogOut size={22} className="mr-4" />
                                 <span className="font-medium">ออกจากระบบ</span>
                             </button>

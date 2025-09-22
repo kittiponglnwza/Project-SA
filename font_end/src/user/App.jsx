@@ -8,6 +8,7 @@ import BookingPage from './pages/BookingPage';
 import FoodPage from './pages/FoodPage';
 import HistoryPage from './pages/HistoryPage';
 import BookingModal from './components/BookingModal';
+import AdminIndex from '../admin/index.jsx';
 
 // Import รูปภาพ
 import LogoImg from "/photo/logo.jpg";
@@ -15,6 +16,7 @@ import LogoImg from "/photo/logo.jpg";
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('auth'));
+  const [isAdmin, setIsAdmin] = useState(() => !!localStorage.getItem('isAdmin'));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [seatStatus, setSeatStatus] = useState({});
   const [availableSeats, setAvailableSeats] = useState(24);
@@ -66,9 +68,18 @@ const App = () => {
     setIsAuthenticated(true);
   };
 
+  const handleAdminLogin = () => {
+    localStorage.setItem('isAdmin', '1');
+    localStorage.setItem('auth', '1');
+    setIsAdmin(true);
+    setIsAuthenticated(true);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('auth');
+    localStorage.removeItem('isAdmin');
     setIsAuthenticated(false);
+    setIsAdmin(false);
   };
 
   // Handle seat click
@@ -155,7 +166,12 @@ const App = () => {
 
   // If user not authenticated, show login/register screen
   if (!isAuthenticated) {
-    return <GamingAuth onLoginSuccess={handleLoginSuccess} />;
+    return <GamingAuth onLoginSuccess={handleLoginSuccess} onAdminLogin={handleAdminLogin} />;
+  }
+
+  // If admin user, show admin index
+  if (isAdmin) {
+    return <AdminIndex onLogout={handleLogout} />;
   }
 
   return (
