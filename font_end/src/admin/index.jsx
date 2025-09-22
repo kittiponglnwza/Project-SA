@@ -29,6 +29,14 @@ import {
     Crown
 } from 'lucide-react';
 
+// Extracted components
+import DashboardViewComp from './components/DashboardView';
+import BookingsViewComp from './components/BookingsView';
+import UsersViewComp from './components/UsersView';
+import SeatManagementViewComp from './components/SeatManagementView';
+import FoodOrdersViewComp from './components/FoodOrdersView';
+import SettingsViewComp from './components/SettingsView';
+
 const AdminPanel = ({ onLogout }) => {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [loading, setLoading] = useState(false);
@@ -289,6 +297,22 @@ const AdminPanel = ({ onLogout }) => {
             orderTime: '14:15'
         }
     ]);
+
+    // Handlers for extracted views
+    const handleZoneChange = (zone) => {
+        setZoneLoading(true);
+        setTimeout(() => {
+            setCurrentZone(zone);
+            setZoneLoading(false);
+        }, 300);
+    };
+
+    const handleRefresh = () => setLoading(true);
+    const handleSelectUser = (user) => {
+        setSelectedUser(user);
+        setShowUserDetail(true);
+    };
+    const handleBackFromUser = () => setShowUserDetail(false);
 
     // หน้า Dashboard
     const DashboardView = () => (
@@ -1231,19 +1255,47 @@ const SeatCard = ({ seat, status, handleSeatClick }) => {
     const renderContent = () => {
         switch (activeTab) {
             case 'dashboard':
-                return <DashboardView />;
+                return (
+                    <DashboardViewComp
+                        dashboardData={dashboardData}
+                        onRefresh={handleRefresh}
+                    />
+                );
             case 'bookings':
-                return <BookingsView />;
+                return (
+                    <BookingsViewComp
+                        zones={zones}
+                        seatStatus={seatStatus}
+                        currentZone={currentZone}
+                        zoneLoading={zoneLoading}
+                        onZoneChange={handleZoneChange}
+                        getZoneStats={getZoneStats}
+                        bookings={bookings}
+                    />
+                );
             case 'users':
-                return <UsersView />;
+                return (
+                    <UsersViewComp
+                        users={users}
+                        selectedUser={selectedUser}
+                        showUserDetail={showUserDetail}
+                        onSelectUser={handleSelectUser}
+                        onBack={handleBackFromUser}
+                    />
+                );
             case 'seats':
-                return <SeatManagementView />;
+                return <SeatManagementViewComp seatManagement={seatManagement} />;
             case 'food':
-                return <FoodOrdersView />;
+                return <FoodOrdersViewComp foodOrders={foodOrders} />;
             case 'settings':
-                return <SettingsView />;
+                return <SettingsViewComp />;
             default:
-                return <DashboardView />;
+                return (
+                    <DashboardViewComp
+                        dashboardData={dashboardData}
+                        onRefresh={handleRefresh}
+                    />
+                );
         }
     };
 
