@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import axios from "axios";
 const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [alert, setAlert] = useState({ type: '', message: '', show: false });
@@ -46,96 +46,71 @@ const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password);
   };
 
-  // Handle login
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    
-    if (!loginForm.username || !loginForm.password) {
-      showAlert('error', 'กรุณากรอก Username และ Password');
+  // handle Login user:admin@game.com pass:515
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  if (!loginForm.username || !loginForm.password) {
+    showAlert('error', 'กรุณากรอก Username และ Password');
+    return;
+  }
+  // ไว้สำหรับ offline
+    if (loginForm.username === "admin@game.com" && loginForm.password === "515") {
+      showAlert("success", "เข้าสู่ระบบผู้ดูแลระบบ (mock)");
+      onAdminLogin();
       return;
     }
+  //
 
-    setLoading(true);
-    
-    // Simulate API call
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Special admin code: username/email = 515 and password = 515
-      if (loginForm.username === '515' && loginForm.password === '515') {
-        showAlert('success', 'เข้าสู่ระบบผู้ดูแลระบบสำเร็จ! กำลังเปลี่ยนหน้า...');
-        setTimeout(() => {
-          if (typeof onAdminLogin === 'function') onAdminLogin();
-        }, 700);
-        setLoading(false);
-        return;
-      }
+  setLoading(true);
+  try {
+    const res = await axios.post("http://localhost:3000/auth/login", {
+      email: loginForm.username,
+      password: loginForm.password,
+    });
 
-      // Mock validation - replace with actual API call
-      if (loginForm.username === '123' && loginForm.password === '123') {
-        showAlert('success', 'เข้าสู่ระบบสำเร็จ! กำลังเปลี่ยนหน้า...');
-        setTimeout(() => {
-          // Call parent handler to switch to app
-          if (typeof onLoginSuccess === 'function') onLoginSuccess();
-        }, 700);
-      } else {
-        showAlert('error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
-      }
-    } catch (error) {
-      showAlert('error', 'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
-    } finally {
-      setLoading(false);
+    const { token, isAdmin } = res.data;
+    localStorage.setItem("token", token);
+
+    if (isAdmin) {
+      showAlert('success', 'เข้าสู่ระบบผู้ดูแลระบบสำเร็จ!');
+      if (typeof onAdminLogin === "function") onAdminLogin();
+    } else {
+      showAlert('success', 'เข้าสู่ระบบสำเร็จ!');
+      if (typeof onLoginSuccess === "function") onLoginSuccess();
     }
-  };
-
+  } catch (err) {
+    showAlert('error', err.response?.data?.message || 'เข้าสู่ระบบไม่สำเร็จ');
+  } finally {
+    setLoading(false);
+  }
+};
   // Handle register
   const handleRegister = async (e) => {
-    e.preventDefault();
-    
-    const { email, name, password, confirmPassword } = registerForm;
-    
-    if (!email || !name || !password || !confirmPassword) {
-      showAlert('error', 'กรุณากรอกข้อมูลให้ครบถ้วน');
-      return;
-    }
+  e.preventDefault();
+  const { email, name, password, confirmPassword } = registerForm;
 
-    if (!validateEmail(email)) {
-      showAlert('error', 'รูปแบบอีเมลไม่ถูกต้อง');
-      return;
-    }
+  if (password !== confirmPassword) {
+    showAlert('error', 'รหัสผ่านไม่ตรงกัน');
+    return;
+  }
 
-    if (password !== confirmPassword) {
-      showAlert('error', 'รหัสผ่านไม่ตรงกัน');
-      return;
-    }
+  setLoading(true);
+  try {
+    await axios.post("http://localhost:3000/auth/register", {
+      email,
+      name,
+      password,
+    });
 
-    if (password.length < 6) {
-      showAlert('error', 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      showAlert('error', 'รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข');
-      return;
-    }
-
-    setLoading(true);
-    
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulate successful registration
-      showAlert('success', 'ลงทะเบียนสำเร็จ! กำลังเปลี่ยนไปหน้าเข้าสู่ระบบ...');
-      setTimeout(() => {
-        setIsLogin(true);
-        setRegisterForm({ email: '', name: '', password: '', confirmPassword: '' });
-      }, 2000);
-    } catch (error) {
-      showAlert('error', 'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง');
-    } finally {
-      setLoading(false);
-    }
-  };
+    showAlert('success', 'สมัครสมาชิกสำเร็จ! โปรดเข้าสู่ระบบ');
+    setIsLogin(true);
+    setRegisterForm({ email: '', name: '', password: '', confirmPassword: '' });
+  } catch (err) {
+    showAlert('error', err.response?.data?.message || 'สมัครสมาชิกไม่สำเร็จ');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const FloatingElement = ({ delay = 0, size = 'w-2 h-2', position = 'top-20 left-20' }) => (
     <div 
