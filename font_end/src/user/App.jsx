@@ -1,21 +1,7 @@
-/*import { useState } from 'react'
-import './App.css'
-
-function App() {
-  return (
-    <>
-      <h1 className=' text-1xl'>
-        Hello
-      </h1>
-    </>
-  )
-}
-
-export default App */
-
 // App.jsx - Main Application Component
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Settings, LogOut } from 'lucide-react';
+import GamingAuth from './pages/login_and_register.jsx';
 import Sidebar from './components/Sidebar';
 import HomePage from './pages/HomePage';
 import BookingPage from './pages/BookingPage';
@@ -24,10 +10,11 @@ import HistoryPage from './pages/HistoryPage';
 import BookingModal from './components/BookingModal';
 
 // Import รูปภาพ
-import LogoImg from "./photo/logo.jpg";
+import LogoImg from "/photo/logo.jpg";
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('auth'));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [seatStatus, setSeatStatus] = useState({});
   const [availableSeats, setAvailableSeats] = useState(24);
@@ -72,6 +59,16 @@ const App = () => {
   const handleNavigation = (page) => {
     setCurrentPage(page);
     setSidebarOpen(false);
+  };
+
+  const handleLoginSuccess = () => {
+    localStorage.setItem('auth', '1');
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth');
+    setIsAuthenticated(false);
   };
 
   // Handle seat click
@@ -156,6 +153,11 @@ const App = () => {
     }
   };
 
+  // If user not authenticated, show login/register screen
+  if (!isAuthenticated) {
+    return <GamingAuth onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100">
       {/* Mobile menu button */}
@@ -173,6 +175,7 @@ const App = () => {
         setSidebarOpen={setSidebarOpen}
         handleNavigation={handleNavigation}
         logoImg={LogoImg}
+        onLogout={handleLogout}
       />
 
       {/* Overlay for mobile */}

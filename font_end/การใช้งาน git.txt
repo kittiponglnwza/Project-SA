@@ -61,5 +61,5 @@ git pull origin main
 
 หลังแก้เสร็จ:
 git add .
-git commit -m "ข้อความ commit"  git commit -m "เพิ่มรูป ฟีเจอร์"
+git commit -m "ข้อความ commit"  git commit -m "เพิ่ม admin"
 git push origin main

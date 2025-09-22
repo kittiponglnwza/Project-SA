@@ -2,16 +2,16 @@
 import React, { useState } from 'react';
 import { Users, Gamepad2, Clock, Monitor } from 'lucide-react';
 
-// Import รูปภาพ
-import EldenRingImg from "../photo/elden.jpg";
-import FifaImg from "../photo/fifa.jpg";
-import ValoImg from "../photo/valo.jpg";
-import RobloxImg from "../photo/roblox.jpg";
-import LolImg from "../photo/lol.jpg";
-import CsgoImg from "../photo/csgo.jpg";
-import MinecraftImg from "../photo/minecraft.jpg";
-import PromoImg from "../photo/promo.jpg";
-import BlackmythImg from "../photo/blackmyth.jpg";
+// Import รูปภาพ - แก้ path จาก ../photo/ เป็น ../../photo/
+import EldenRingImg from "/photo/elden.jpg";
+import FifaImg from "/photo/fifa.jpg";
+import ValoImg from "/photo/valo.jpg";
+import RobloxImg from "/photo/roblox.jpg";
+import LolImg from "/photo/lol.jpg";
+import CsgoImg from "/photo/csgo.jpg";
+import MinecraftImg from "/photo/minecraft.jpg";
+import PromoImg from "/photo/promo.jpg";
+import BlackmythImg from "/photo/blackmyth.jpg";
 
 
 

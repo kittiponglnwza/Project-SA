@@ -90,10 +90,14 @@ const Sidebar = ({
           <Settings size={16} className="mr-3" />
           Settings
         </a>
-        <a href="#" className="flex items-center p-3 rounded-xl text-slate-400 hover:text-red-400 hover:bg-slate-800 transition-all">
+        <button
+          type="button"
+          onClick={(e) => { e.preventDefault(); if (typeof onLogout === 'function') onLogout(); }}
+          className="w-full text-left flex items-center p-3 rounded-xl text-slate-400 hover:text-red-400 hover:bg-slate-800 transition-all"
+        >
           <LogOut size={16} className="mr-3" />
           Log out
-        </a>
+        </button>
       </div>
     </aside>
   );

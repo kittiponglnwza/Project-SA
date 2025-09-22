@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const GamingAuth = () => {
+const GamingAuth = ({ onLoginSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [alert, setAlert] = useState({ type: '', message: '', show: false });
   const [loading, setLoading] = useState(false);
@@ -65,9 +65,9 @@ const GamingAuth = () => {
       if (loginForm.username === 'demo@example.com' && loginForm.password === 'Demo123') {
         showAlert('success', 'เข้าสู่ระบบสำเร็จ! กำลังเปลี่ยนหน้า...');
         setTimeout(() => {
-          // Redirect logic here
-          console.log('Redirecting to dashboard...');
-        }, 1500);
+          // Call parent handler to switch to app
+          if (typeof onLoginSuccess === 'function') onLoginSuccess();
+        }, 700);
       } else {
         showAlert('error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
       }
