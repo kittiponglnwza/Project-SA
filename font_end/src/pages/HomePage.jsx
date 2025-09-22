@@ -14,6 +14,7 @@ import PromoImg from "../photo/promo.jpg";
 import BlackmythImg from "../photo/blackmyth.jpg";
 
 
+
 const HomePage = ({ availableSeats }) => {
   const [selectedGame, setSelectedGame] = useState(null);
 
@@ -144,9 +145,11 @@ const HomePage = ({ availableSeats }) => {
       <div className="relative z-10">
         {/* Welcome Section */}
         <div className="bg-slate-700/60 backdrop-blur-sm p-8 rounded-2xl mb-8 border border-white/10 text-center fade-in">
-          <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-            🎮 ยินดีต้อนรับสู่ Easy Game
+          <h1 className="flex items-center justify-center gap-2 text-3xl font-bold mb-3 bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+               ยินดีต้อนรับสู่ Easy Game
           </h1>
+
+
           <p className="text-slate-300 text-lg">
             เพลิดเพลินกับการเล่นเกมในสภาพแวดล้อมที่สมบูรณ์แบบ
           </p>
