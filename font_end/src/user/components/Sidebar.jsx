@@ -7,7 +7,8 @@ const Sidebar = ({
   sidebarOpen, 
   setSidebarOpen, 
   handleNavigation, 
-  logoImg 
+  logoImg,
+  onLogout
 }) => {
   return (
     <aside
@@ -96,7 +97,7 @@ const Sidebar = ({
           className="w-full text-left flex items-center p-3 rounded-xl text-slate-400 hover:text-red-400 hover:bg-slate-800 transition-all"
         >
           <LogOut size={16} className="mr-3" />
-          Log out
+          Log out 
         </button>
       </div>
     </aside>

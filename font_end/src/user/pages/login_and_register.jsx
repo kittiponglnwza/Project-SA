@@ -62,7 +62,7 @@ const GamingAuth = ({ onLoginSuccess }) => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Mock validation - replace with actual API call
-      if (loginForm.username === 'demo@example.com' && loginForm.password === 'Demo123') {
+      if (loginForm.username === '123' && loginForm.password === '123') {
         showAlert('success', 'เข้าสู่ระบบสำเร็จ! กำลังเปลี่ยนหน้า...');
         setTimeout(() => {
           // Call parent handler to switch to app
