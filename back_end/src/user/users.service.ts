@@ -11,15 +11,21 @@ export class UsersService {
   }
 
   // ดึง user ตาม id
-    findOne(id: number) {
+  // users.service.ts
+  findOne(id: number) {
     return this.prisma.user.findUnique({
-        where: { id },
-        // include: {
-        // bookingHistory: true,
-        // foodHistory: true,
-        // },
+      where: { id },
+      include: {
+        bookings: {
+          include: {
+            seat: true,   // ✅ ดึงรายละเอียดที่นั่งมาด้วย
+          },
+        },
+        // 👉 ถ้ามี orders ค่อย include: { orders: true }
+      },
     });
-    }
+  }
+
 
 
   // อัปเดต user

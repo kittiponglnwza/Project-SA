@@ -12,27 +12,44 @@ export class AuthService {
     const user = await this.prisma.user.create({
       data: { email, name, password: hashedPassword },
     });
-    return { message: 'Register success', userId: user.id };
+
+    const isAdmin = user.email === 'admin@game.com';
+    const token = jwt.sign(
+      { sub: user.id, email: user.email, isAdmin },
+      process.env.JWT_SECRET || 'secret',
+      { expiresIn: '1h' },
+    );
+
+    return { 
+      message: 'Register success', 
+      token, 
+      isAdmin,
+      user: { id: user.id, name: user.name, email: user.email }
+    };
   }
 
-    async login(email: string, password: string) {
+
+  async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) throw new UnauthorizedException('User not found');
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new UnauthorizedException('Invalid credentials');
 
-    const isAdmin = user.email === 'admin@game.com';
+    // 👇 ใช้ role จาก DB
+    const isAdmin = user.role === 'Admin';
 
     const token = jwt.sign(
-        { sub: user.id, email: user.email, isAdmin },
-        process.env.JWT_SECRET || 'secret',
-        { expiresIn: '1h' },
+      { sub: user.id, email: user.email, role: user.role, isAdmin },
+      process.env.JWT_SECRET || 'secret',
+      { expiresIn: '1h' },
     );
-
-    return { message: 'Login success', token, isAdmin };
-    }
-
-
-  
+    
+    return { 
+      message: 'Login success', 
+      token, 
+      isAdmin, 
+      user: { id: user.id, name: user.name, email: user.email }
+    };
+  }
 }

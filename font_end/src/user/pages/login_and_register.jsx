@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+
 const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [alert, setAlert] = useState({ type: '', message: '', show: false });
@@ -19,12 +20,11 @@ const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
     confirmPassword: ''
   });
 
-  // Mouse tracking for floating animation
+  // Mouse tracking
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-    
     document.addEventListener('mousemove', handleMouseMove);
     return () => document.removeEventListener('mousemove', handleMouseMove);
   }, []);
@@ -37,88 +37,101 @@ const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
     }, 5000);
   };
 
-  // Validation functions
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  // ----------------------------
+  // Login
+  // ----------------------------
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!loginForm.username || !loginForm.password) {
+      showAlert('error', 'กรุณากรอก Username และ Password');
+      return;
+    }
 
-  const validatePassword = (password) => {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password);
-  };
-
-  // handle Login user:admin@game.com pass:515
- const handleLogin = async (e) => {
-  e.preventDefault();
-  if (!loginForm.username || !loginForm.password) {
-    showAlert('error', 'กรุณากรอก Username และ Password');
-    return;
-  }
-  // ไว้สำหรับ offline
+    // offline mock
     if (loginForm.username === "admin@game.com" && loginForm.password === "515") {
       showAlert("success", "เข้าสู่ระบบผู้ดูแลระบบ (mock)");
       onAdminLogin();
       return;
     }
-  //
 
-  setLoading(true);
-  try {
-    const res = await axios.post("http://localhost:3000/auth/login", {
-      email: loginForm.username,
-      password: loginForm.password,
-    });
+    setLoading(true);
+    try {
+      const res = await axios.post("http://localhost:3000/auth/login", {
+        email: loginForm.username,
+        password: loginForm.password,
+      });
 
-    const { token, isAdmin } = res.data;
-    localStorage.setItem("token", token);
+      const { token, isAdmin, user } = res.data;
 
-    if (isAdmin) {
-      showAlert('success', 'เข้าสู่ระบบผู้ดูแลระบบสำเร็จ!');
-      if (typeof onAdminLogin === "function") onAdminLogin();
-    } else {
-      showAlert('success', 'เข้าสู่ระบบสำเร็จ!');
-      if (typeof onLoginSuccess === "function") onLoginSuccess();
+      // save user info
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", user.id);
+      localStorage.setItem("userName", user.name);
+      localStorage.setItem("userEmail", user.email);
+
+      if (isAdmin) {
+        showAlert('success', 'เข้าสู่ระบบผู้ดูแลระบบสำเร็จ!');
+        if (typeof onAdminLogin === "function") onAdminLogin();
+      } else {
+        showAlert('success', `ยินดีต้อนรับ ${user.name}`);
+        if (typeof onLoginSuccess === "function") onLoginSuccess();
+      }
+    } catch (err) {
+      showAlert('error', err.response?.data?.message || 'เข้าสู่ระบบไม่สำเร็จ');
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    showAlert('error', err.response?.data?.message || 'เข้าสู่ระบบไม่สำเร็จ');
-  } finally {
-    setLoading(false);
-  }
-};
-  // Handle register
+  };
+
+  // ----------------------------
+  // Register
+  // ----------------------------
   const handleRegister = async (e) => {
-  e.preventDefault();
-  const { email, name, password, confirmPassword } = registerForm;
+    e.preventDefault();
+    const { email, name, password, confirmPassword } = registerForm;
 
-  if (password !== confirmPassword) {
-    showAlert('error', 'รหัสผ่านไม่ตรงกัน');
-    return;
-  }
+    if (password !== confirmPassword) {
+      showAlert('error', 'รหัสผ่านไม่ตรงกัน');
+      return;
+    }
 
-  setLoading(true);
-  try {
-    await axios.post("http://localhost:3000/auth/register", {
-      email,
-      name,
-      password,
-    });
+    setLoading(true);
+    try {
+      const res = await axios.post("http://localhost:3000/auth/register", {
+        email,
+        name,
+        password,
+      });
 
-    showAlert('success', 'สมัครสมาชิกสำเร็จ! โปรดเข้าสู่ระบบ');
-    setIsLogin(true);
-    setRegisterForm({ email: '', name: '', password: '', confirmPassword: '' });
-  } catch (err) {
-    showAlert('error', err.response?.data?.message || 'สมัครสมาชิกไม่สำเร็จ');
-  } finally {
-    setLoading(false);
-  }
-};
+      const { token, isAdmin, user } = res.data;
 
+      // save user info
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", user.id);
+      localStorage.setItem("userName", user.name);
+      localStorage.setItem("userEmail", user.email);
+
+      if (isAdmin) {
+        showAlert('success', 'สมัครเป็นผู้ดูแลระบบสำเร็จ!');
+        if (typeof onAdminLogin === "function") onAdminLogin();
+      } else {
+        showAlert('success', `สมัครสมาชิกสำเร็จ! ยินดีต้อนรับ ${user.name}`);
+        if (typeof onLoginSuccess === "function") onLoginSuccess();
+      }
+
+      setRegisterForm({ email: '', name: '', password: '', confirmPassword: '' });
+    } catch (err) {
+      showAlert('error', err.response?.data?.message || 'สมัครสมาชิกไม่สำเร็จ');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // floating bg
   const FloatingElement = ({ delay = 0, size = 'w-2 h-2', position = 'top-20 left-20' }) => (
     <div 
       className={`absolute ${position} ${size} bg-blue-400/20 rounded-full animate-pulse`}
-      style={{
-        animationDelay: `${delay}s`,
-        animationDuration: '4s'
-      }}
+      style={{ animationDelay: `${delay}s`, animationDuration: '4s' }}
     />
   );
 
@@ -128,40 +141,34 @@ const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 overflow-hidden relative">
       {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-950/30 via-slate-900/20 to-blue-900/30 animate-pulse" />
-      
-      {/* Floating Elements */}
+
+      {/* Floating */}
       <FloatingElement delay={0} size="w-3 h-3" position="top-20 left-20" />
       <FloatingElement delay={1} size="w-2 h-2" position="top-40 right-32" />
       <FloatingElement delay={2} size="w-4 h-4" position="bottom-32 left-16" />
       <FloatingElement delay={3} size="w-2 h-2" position="bottom-20 right-20" />
-      
-      {/* Rotating Gaming Elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-blue-400/20 rotate-45 animate-spin" style={{ animationDuration: '20s' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-24 h-24 border border-blue-300/20 rotate-12 animate-spin" style={{ animationDuration: '25s' }} />
-      </div>
 
       <div className="flex items-center justify-center min-h-screen p-4 relative z-10">
-        {/* Main Auth Window */}
+        {/* Auth Window */}
         <div 
           className="bg-slate-900/40 backdrop-blur-xl border border-blue-500/20 rounded-3xl p-8 w-full max-w-md shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-blue-500/25"
           style={{ transform: windowTransform }}
         >
-          {/* Window Header */}
+          {/* Header */}
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-blue-500/20">
             <h1 className="text-blue-100 text-xl font-bold">
               Desktop - {isLogin ? 'Login' : 'Register'}
             </h1>
             <div className="flex gap-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full cursor-pointer hover:bg-red-400 transition-colors" />
-              <div className="w-3 h-3 bg-yellow-500 rounded-full cursor-pointer hover:bg-yellow-400 transition-colors" />
-              <div className="w-3 h-3 bg-green-500 rounded-full cursor-pointer hover:bg-green-400 transition-colors" />
+              <div className="w-3 h-3 bg-red-500 rounded-full" />
+              <div className="w-3 h-3 bg-yellow-500 rounded-full" />
+              <div className="w-3 h-3 bg-green-500 rounded-full" />
             </div>
           </div>
 
           {/* Alert */}
           {alert.show && (
-            <div className={`mb-6 p-4 rounded-xl border animate-in slide-in-from-top duration-300 ${
+            <div className={`mb-6 p-4 rounded-xl border ${
               alert.type === 'success' 
                 ? 'bg-green-500/20 border-green-500/30 text-green-400' 
                 : 'bg-red-500/20 border-red-500/30 text-red-400'
@@ -170,170 +177,109 @@ const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
             </div>
           )}
 
+          {/* Forms */}
           {isLogin ? (
-            /* Login Form */
+            // ---------- Login ----------
             <form onSubmit={handleLogin} className="space-y-6">
               <h2 className="text-2xl font-bold text-blue-100 text-center mb-8">Login</h2>
-              
-              <div className="space-y-2">
-                <label className="block text-blue-200/80 text-sm font-medium">
-                  Username or Email
-                </label>
+
+              <div>
+                <label className="block text-blue-200/80 text-sm font-medium">Username or Email</label>
                 <input
                   type="text"
                   value={loginForm.username}
                   onChange={(e) => setLoginForm(prev => ({ ...prev, username: e.target.value }))}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100 placeholder-blue-300/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100"
                   placeholder="Enter your username or email"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-blue-200/80 text-sm font-medium">
-                  Password
-                </label>
+              <div>
+                <label className="block text-blue-200/80 text-sm font-medium">Password</label>
                 <input
                   type="password"
                   value={loginForm.password}
                   onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100 placeholder-blue-300/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100"
                   placeholder="Enter your password"
                   required
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-600 hover:to-blue-800 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-70 disabled:cursor-not-allowed relative overflow-hidden group"
-              >
-                <span className={`${loading ? 'opacity-0' : 'opacity-100'} transition-opacity`}>
-                  Login
-                </span>
-                {loading && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span className="ml-2">กำลังเข้าสู่ระบบ...</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-              </button>
-
-              <div className="relative text-center">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-blue-500/30" />
-                </div>
-                <div className="relative bg-transparent px-4">
-                  <span className="text-blue-200/60 bg-gradient-to-r from-transparent via-slate-900/80 to-transparent px-4">Or</span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => showAlert('error', 'Google login ยังไม่เปิดใช้งาน')}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 via-slate-700 to-blue-800 hover:from-blue-700 hover:via-slate-600 hover:to-blue-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg relative overflow-hidden group"
-              >
-                Sign in with Google
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <button type="submit" disabled={loading}
+                className="w-full py-3 bg-gradient-to-r from-blue-700 to-blue-900 text-white font-bold rounded-xl">
+                {loading ? "กำลังเข้าสู่ระบบ..." : "Login"}
               </button>
 
               <div className="text-center text-blue-200/70">
-                Don't have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(false)}
-                  className="text-blue-400 hover:text-blue-300 font-bold transition-colors underline"
-                >
+                Don't have an account?{" "}
+                <button type="button" onClick={() => setIsLogin(false)} className="text-blue-400 underline">
                   Register here
                 </button>
               </div>
             </form>
           ) : (
-            /* Register Form */
+            // ---------- Register ----------
             <form onSubmit={handleRegister} className="space-y-6">
               <h2 className="text-2xl font-bold text-blue-100 text-center mb-8">Register</h2>
-              
-              <div className="space-y-2">
-                <label className="block text-blue-200/80 text-sm font-medium">
-                  Email
-                </label>
+
+              <div>
+                <label className="block text-blue-200/80 text-sm font-medium">Email</label>
                 <input
                   type="email"
                   value={registerForm.email}
                   onChange={(e) => setRegisterForm(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100 placeholder-blue-300/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100"
                   placeholder="Enter your email"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-blue-200/80 text-sm font-medium">
-                  Name
-                </label>
+              <div>
+                <label className="block text-blue-200/80 text-sm font-medium">Name</label>
                 <input
                   type="text"
                   value={registerForm.name}
                   onChange={(e) => setRegisterForm(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100 placeholder-blue-300/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100"
                   placeholder="Enter your full name"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-blue-200/80 text-sm font-medium">
-                  Password
-                </label>
+              <div>
+                <label className="block text-blue-200/80 text-sm font-medium">Password</label>
                 <input
                   type="password"
                   value={registerForm.password}
                   onChange={(e) => setRegisterForm(prev => ({ ...prev, password: e.target.value }))}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100 placeholder-blue-300/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100"
                   placeholder="Create a password"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-blue-200/80 text-sm font-medium">
-                  Confirm Password
-                </label>
+              <div>
+                <label className="block text-blue-200/80 text-sm font-medium">Confirm Password</label>
                 <input
                   type="password"
                   value={registerForm.confirmPassword}
                   onChange={(e) => setRegisterForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100 placeholder-blue-300/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-xl text-blue-100"
                   placeholder="Confirm your password"
                   required
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-slate-800 hover:from-blue-500 hover:to-slate-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-70 disabled:cursor-not-allowed relative overflow-hidden group"
-              >
-                <span className={`${loading ? 'opacity-0' : 'opacity-100'} transition-opacity`}>
-                  Register
-                </span>
-                {loading && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span className="ml-2">กำลังลงทะเบียน...</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <button type="submit" disabled={loading}
+                className="w-full py-3 bg-gradient-to-r from-blue-600 to-slate-800 text-white font-bold rounded-xl">
+                {loading ? "กำลังสมัครสมาชิก..." : "Register"}
               </button>
 
               <div className="text-center text-blue-200/70">
-                Already have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(true)}
-                  className="text-blue-400 hover:text-blue-300 font-bold transition-colors underline"
-                >
+                Already have an account?{" "}
+                <button type="button" onClick={() => setIsLogin(true)} className="text-blue-400 underline">
                   Login here
                 </button>
               </div>

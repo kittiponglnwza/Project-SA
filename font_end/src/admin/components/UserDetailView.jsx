@@ -75,17 +75,27 @@ const UserDetailView = ({ selectedUser, onBack }) => {
                 <th className="px-6 py-3 text-left text-slate-300">สถานะ</th>
               </tr>
             </thead>
-            <tbody>
-              {userDetail.bookingHistory?.map((booking) => (
-                <tr key={booking.id}>
-                  <td className="px-6 py-4 text-white">{booking.seat}</td>
-                  <td className="px-6 py-4 text-slate-300">{booking.date}</td>
-                  <td className="px-6 py-4 text-slate-300">{booking.duration} ชม.</td>
-                  <td className="px-6 py-4 text-green-400">฿{booking.price}</td>
-                  <td className="px-6 py-4 text-blue-400">เสร็จสิ้น</td>
-                </tr>
-              ))}
-            </tbody>
+              <tbody>
+                {userDetail.bookings?.map((booking) => (
+                  <tr key={booking.id}>
+                    <td className="px-6 py-4 text-white">
+                      {booking.seat?.zone}{booking.seat?.id}
+                    </td>
+                    <td className="px-6 py-4 text-slate-300">
+                      {new Date(booking.date).toLocaleDateString("th-TH")}
+                    </td>
+                    <td className="px-6 py-4 text-slate-300">{booking.duration} ชม.</td>
+                    <td className="px-6 py-4 text-green-400">฿{booking.price}</td>
+                    <td className="px-6 py-4 text-blue-400">
+                      {booking.status === "active"
+                        ? "กำลังใช้งาน"
+                        : booking.status === "completed"
+                        ? "เสร็จสิ้น"
+                        : "ยกเลิก"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
           </table>
         </div>
       </div>

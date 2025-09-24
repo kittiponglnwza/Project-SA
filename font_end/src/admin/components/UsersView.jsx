@@ -79,7 +79,11 @@ const UsersView = () => {
                         <Edit size={16} />
                       </button>
                       <button
-                        onClick={() => deleteUser(user.id)}
+                        onClick={() => {
+                          if (window.confirm(`คุณต้องการลบผู้ใช้ ${user.name} จริงหรือไม่?`)) {
+                            deleteUser(user.id);
+                          }
+                        }}
                         className="text-red-400"
                       >
                         <Trash2 size={16} />

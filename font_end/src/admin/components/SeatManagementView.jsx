@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { CheckCircle, XCircle, Settings, BarChart3, Crown, Users as UsersIcon } from 'lucide-react';
 
-const SeatManagementView = ({ seatManagement }) => {
+const SeatManagementView = () => {
+  const [seatManagement, setSeatManagement] = useState([]);
   const [selectedZone, setSelectedZone] = useState('ทั้งหมด');
   const [selectedCondition, setSelectedCondition] = useState('ทั้งหมด');
 
+  // ✅ โหลดข้อมูลจาก backend
+  useEffect(() => {
+    axios.get("http://localhost:3000/seats")
+      .then((res) => setSeatManagement(res.data))
+      .catch((err) => console.error("Error fetching seats:", err));
+  }, []);
+
+  // ✅ Filter
   const filteredSeats = seatManagement.filter((seat) => {
     const zoneMatch = selectedZone === 'ทั้งหมด' || seat.zone === selectedZone;
     const conditionMatch = selectedCondition === 'ทั้งหมด' || seat.condition === selectedCondition;
     return zoneMatch && conditionMatch;
   });
 
+  // ✅ คำนวณสถิติ
   const totalSeats = seatManagement.length;
   const availableSeats = seatManagement.filter((s) => s.status === 'ว่าง').length;
   const occupiedSeats = seatManagement.filter((s) => s.status === 'ไม่ว่าง').length;
@@ -21,6 +32,7 @@ const SeatManagementView = ({ seatManagement }) => {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-white">ตรวจสอบสถานะที่นั่ง</h2>
         <div className="text-slate-300">
@@ -28,6 +40,7 @@ const SeatManagementView = ({ seatManagement }) => {
         </div>
       </div>
 
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-gradient-to-br from-green-800 to-green-700 rounded-xl p-6 border border-green-600">
           <div className="flex items-center justify-between">
@@ -72,7 +85,9 @@ const SeatManagementView = ({ seatManagement }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-blue-200 text-sm font-medium">อัตราการใช้งาน</p>
-              <p className="text-3xl font-bold text-white">{Math.round((occupiedSeats / (totalSeats - maintenanceSeats)) * 100)}%</p>
+              <p className="text-3xl font-bold text-white">
+                {totalSeats > 0 ? Math.round((occupiedSeats / (totalSeats - maintenanceSeats)) * 100) : 0}%
+              </p>
               <p className="text-blue-300 text-sm">ของที่ใช้ได้</p>
             </div>
             <div className="bg-blue-500/20 p-3 rounded-full">
@@ -82,39 +97,26 @@ const SeatManagementView = ({ seatManagement }) => {
         </div>
       </div>
 
+      {/* Condition Summary */}
       <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
         <h3 className="text-lg font-semibold text-white mb-4">สภาพที่นั่งทั้งหมด</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
             <span className="text-slate-300">สภาพดีเยี่ยม</span>
-            <div className="flex items-center gap-2">
-              <div className="w-16 bg-slate-600 rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(excellentCondition / totalSeats) * 100}%` }}></div>
-              </div>
-              <span className="text-green-400 font-semibold">{excellentCondition}</span>
-            </div>
+            <span className="text-green-400 font-semibold">{excellentCondition}</span>
           </div>
           <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
             <span className="text-slate-300">สภาพดี</span>
-            <div className="flex items-center gap-2">
-              <div className="w-16 bg-slate-600 rounded-full h-2">
-                <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(goodCondition / totalSeats) * 100}%` }}></div>
-              </div>
-              <span className="text-blue-400 font-semibold">{goodCondition}</span>
-            </div>
+            <span className="text-blue-400 font-semibold">{goodCondition}</span>
           </div>
           <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
             <span className="text-slate-300">ต้องซ่อม</span>
-            <div className="flex items-center gap-2">
-              <div className="w-16 bg-slate-600 rounded-full h-2">
-                <div className="bg-red-500 h-2 rounded-full" style={{ width: `${(needRepair / totalSeats) * 100}%` }}></div>
-              </div>
-              <span className="text-red-400 font-semibold">{needRepair}</span>
-            </div>
+            <span className="text-red-400 font-semibold">{needRepair}</span>
           </div>
         </div>
       </div>
 
+      {/* Filter */}
       <div className="flex gap-4 items-center">
         <div>
           <label className="text-slate-300 text-sm mb-2 block">กรองตามโซน:</label>
@@ -149,6 +151,7 @@ const SeatManagementView = ({ seatManagement }) => {
         </div>
       </div>
 
+      {/* Seat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
         {filteredSeats.map((seat) => (
           <div
@@ -207,9 +210,13 @@ const SeatManagementView = ({ seatManagement }) => {
             </div>
 
             <div className="mt-4 flex gap-2">
-              <button className="flex-1 bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-sm transition-colors">รายละเอียด</button>
+              <button className="flex-1 bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-sm transition-colors">
+                รายละเอียด
+              </button>
               {seat.condition === 'ต้องซ่อม' && (
-                <button className="bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded text-sm transition-colors">ซ่อมแซม</button>
+                <button className="bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded text-sm transition-colors">
+                  ซ่อมแซม
+                </button>
               )}
             </div>
           </div>

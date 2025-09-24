@@ -12,10 +12,12 @@ export class UsersController {
   }
 
   // GET /users/:id
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
+
 
   // PUT /users/:id
   @Put(':id')

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Users } from 'lucide-react';
 
-const SeatCard = ({ seat, status, handleSeatClick }) => {
-  const isVIP = seat.includes('VIP');
-  const isRoom = seat.includes('Room');
-  const isAvailable = status === 'available';
-  const isMaintenance = status === 'maintenance';
+const SeatCard = ({ seat, handleSeatClick }) => {
+  const isVIP = seat.zone === 'VIP';
+  const isRoom = seat.zone === 'Room';
+  const isAvailable = seat.status === 'ว่าง';
+  const isMaintenance = seat.status === 'ซ่อมบำรุง';
 
   return (
     <div
@@ -42,12 +42,12 @@ const SeatCard = ({ seat, status, handleSeatClick }) => {
               ? '/images/vip.jpg'
               : '/img/table1.jpg'
           }
-          alt={seat}
+          alt={seat.type}
           className="w-full h-full object-cover"
         />
 
         <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-slate-200 text-sm bg-black/60 px-2 py-1 rounded">
-          {isRoom ? 'Gaming Room' : isVIP ? 'VIP Gaming' : 'Gaming Setup'}
+          {isRoom ? 'Gaming Room' : isVIP ? 'VIP Gaming' : seat.type}
         </div>
       </div>
 
@@ -62,7 +62,7 @@ const SeatCard = ({ seat, status, handleSeatClick }) => {
                 : 'from-blue-400 to-blue-600'
             }`}
           >
-            {seat}
+            {seat.zone}-{seat.id}
           </h3>
           <span
             className={`
@@ -77,23 +77,12 @@ const SeatCard = ({ seat, status, handleSeatClick }) => {
               shadow-lg
             `}
           >
-            {isAvailable ? 'ว่าง' : isMaintenance ? 'ซ่อมแซม' : 'ไม่ว่าง'}
+            {seat.status}
           </span>
         </div>
       </div>
-
-      <div
-        className={`absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 ${
-          isVIP
-            ? 'bg-gradient-to-br from-yellow-500/10 to-orange-500/10'
-            : isRoom
-            ? 'bg-gradient-to-br from-purple-500/10 to-indigo-500/10'
-            : 'bg-gradient-to-br from-blue-500/10 to-purple-500/10'
-        }`}
-      ></div>
     </div>
   );
 };
 
 export default SeatCard;
-
