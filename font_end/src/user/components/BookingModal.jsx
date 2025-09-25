@@ -9,7 +9,7 @@ const BookingModal = ({
   selectedSeat,
   bookingDetails,
   setBookingDetails,
-  onBookingSuccess, // ✅ callback จาก App
+  onBookingSuccess,
 }) => {
   if (!showBookingModal || !selectedSeat) return null;
 
@@ -22,15 +22,6 @@ const BookingModal = ({
 
   const price = calculatePrice(bookingDetails.duration);
 
-  // ✅ helper คำนวณเวลาเลิก
-  const calculateEndTime = (startTime, duration) => {
-    if (!startTime) return null;
-    const [hour, minute] = startTime.split(":").map(Number);
-    const endHour = hour + duration;
-    return `${String(endHour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-  };
-
-  // ✅ confirm booking
   const handleBookingConfirm = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -41,11 +32,14 @@ const BookingModal = ({
         return;
       }
 
-      const endTime = calculateEndTime(
-        bookingDetails.startTime,
-        bookingDetails.duration
+      // 🟢 รวมวันที่ + เวลาเริ่มต้น -> ISO
+      const startDateTime = new Date(
+        `${bookingDetails.date}T${bookingDetails.startTime}:00`
       );
+      const endDateTime = new Date(startDateTime);
+      endDateTime.setHours(endDateTime.getHours() + bookingDetails.duration);
 
+      // 🟢 บันทึก booking
       await axios.post(
         "http://localhost:3000/bookings",
         {
@@ -53,8 +47,8 @@ const BookingModal = ({
           seatId: selectedSeat.id,
           duration: bookingDetails.duration,
           price,
-          startTime: bookingDetails.startTime,
-          endTime,
+          startTime: startDateTime.toISOString(),
+          endTime: endDateTime.toISOString(),
           paymentMethod: bookingDetails.paymentMethod || "cash",
         },
         {
@@ -62,11 +56,16 @@ const BookingModal = ({
         }
       );
 
+      // 🟢 อัปเดตสถานะ seat → UNAVAILABLE
       await axios.patch(
-        `http://localhost:3000/seats/${selectedSeat.id}/book`
+        `http://localhost:3000/seats/${selectedSeat.id}`,
+        { status: "UNAVAILABLE" },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
-      if (onBookingSuccess) onBookingSuccess(); // ✅ refresh seats ผ่าน App
+      if (onBookingSuccess) onBookingSuccess();
       alert(`✅ จองโต๊ะ ${selectedSeat.zone}${selectedSeat.id} สำเร็จ!`);
       setShowBookingModal(false);
     } catch (err) {
@@ -81,21 +80,15 @@ const BookingModal = ({
     timeSlots.push(`${hour.toString().padStart(2, "0")}:00`);
   }
 
-  // ✅ กรองเวลาถ้าวันที่ที่เลือก = วันนี้
   const filterTimeSlots = () => {
     if (!bookingDetails.date) return timeSlots;
-
     const today = new Date().toISOString().split("T")[0];
-    if (bookingDetails.date !== today) {
-      return timeSlots; // ถ้าเลือกวันอื่น ให้โชว์ทุกเวลา
-    }
-
+    if (bookingDetails.date !== today) return timeSlots;
     const now = new Date();
     const currentHour = now.getHours();
-
     return timeSlots.filter((time) => {
       const [h] = time.split(":").map(Number);
-      return h > currentHour; // เลือกได้เฉพาะเวลาที่มากกว่าปัจจุบัน
+      return h > currentHour;
     });
   };
 

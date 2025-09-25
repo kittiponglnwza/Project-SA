@@ -50,12 +50,17 @@ const App = () => {
     setIsAuthenticated(true);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth");
-    localStorage.removeItem("isAdmin");
-    setIsAuthenticated(false);
-    setIsAdmin(false);
-  };
+const handleLogout = () => {
+  localStorage.removeItem("auth");
+  localStorage.removeItem("isAdmin");
+  localStorage.removeItem("token");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userEmail");
+
+  setIsAuthenticated(false);
+  setIsAdmin(false);
+};
 
   // ✅ เปิด popup เมื่อกดที่ seat
   const handleOpenModal = (seat) => {

@@ -5,7 +5,6 @@ import axios from "axios";
 
 const BookingPage = ({ handleOpenModal, setFetchSeatsCallback }) => {
   const [zones, setZones] = useState({});
-  const [seatStatus, setSeatStatus] = useState({});
   const [currentZone, setCurrentZone] = useState("A");
   const [loading, setLoading] = useState(false);
 
@@ -22,18 +21,6 @@ const BookingPage = ({ handleOpenModal, setFetchSeatsCallback }) => {
         return acc;
       }, {});
       setZones(grouped);
-
-      // map status
-      const statusMap = {};
-      seats.forEach((seat) => {
-        statusMap[seat.id] =
-          seat.status === "ว่าง"
-            ? "available"
-            : seat.status === "ซ่อมบำรุง"
-            ? "maintenance"
-            : "occupied";
-      });
-      setSeatStatus(statusMap);
     } catch (err) {
       console.error("Error fetching seats:", err);
     }
@@ -55,10 +42,17 @@ const BookingPage = ({ handleOpenModal, setFetchSeatsCallback }) => {
     }, 300);
   };
 
+  // ✅ Map แสดงผลเป็นภาษาไทย
+  const statusText = {
+    AVAILABLE: "ใช้งานได้",
+    UNAVAILABLE: "ใช้งานไม่ได้",
+    MAINTENANCE: "ซ่อมแซม",
+  };
+
   // Zone stats
   const getZoneStats = (zone) => {
     const zoneSeats = zones[zone] || [];
-    const available = zoneSeats.filter((s) => s.status === "ว่าง").length;
+    const available = zoneSeats.filter((s) => s.status === "AVAILABLE").length;
     return { total: zoneSeats.length, available };
   };
 
@@ -93,7 +87,9 @@ const BookingPage = ({ handleOpenModal, setFetchSeatsCallback }) => {
         <div>
           Zone {currentZone} - <span className="text-blue-400">{stats.total} โต๊ะ</span>
         </div>
-        <div className="text-green-400">✅ ว่าง {stats.available} โต๊ะ</div>
+        <div className="text-green-400">
+          ✅ {statusText.AVAILABLE} {stats.available} โต๊ะ
+        </div>
       </div>
 
       {/* Seats */}
@@ -102,7 +98,6 @@ const BookingPage = ({ handleOpenModal, setFetchSeatsCallback }) => {
           <SeatCard
             key={seat.id}
             seat={seat}
-            status={seatStatus[seat.id]}
             handleSeatClick={() => handleOpenModal(seat)} // ✅ ส่ง seat object
           />
         ))}

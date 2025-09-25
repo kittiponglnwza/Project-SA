@@ -1,3 +1,4 @@
+// BookingsView.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SeatCard from './SeatCard';
@@ -8,6 +9,19 @@ const BookingsView = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentZone, setCurrentZone] = useState("A"); // default Zone A
+
+  // ✅ Mapping enum → ภาษาไทย
+  const statusMap = {
+    AVAILABLE: "available",
+    UNAVAILABLE: "occupied",
+    MAINTENANCE: "maintenance",
+  };
+
+  const displayStatus = {
+    AVAILABLE: "ใช้งานได้",
+    UNAVAILABLE: "ใช้งานไม่ได้",
+    MAINTENANCE: "ซ่อมแซม",
+  };
 
   const fetchSeats = async () => {
     setLoading(true);
@@ -23,17 +37,12 @@ const BookingsView = () => {
       }, {});
       setZones(grouped);
 
-      // map status
-      const statusMap = {};
-      seats.forEach(seat => {
-        statusMap[seat.id] =
-          seat.status === 'ว่าง'
-            ? 'available'
-            : seat.status === 'ซ่อมบำรุง'
-            ? 'maintenance'
-            : 'occupied';
+      // map status (ใช้ enum จาก backend)
+      const statusMapState = {};
+      seats.forEach((seat) => {
+        statusMapState[seat.id] = statusMap[seat.status] || "unknown";
       });
-      setSeatStatus(statusMap);
+      setSeatStatus(statusMapState);
     } catch (err) {
       console.error("Error fetching seats:", err);
     } finally {
@@ -57,17 +66,22 @@ const BookingsView = () => {
 
   const handleSeatClick = async (seat) => {
     try {
-      const action =
-        seatStatus[seat.id] === 'available' ? 'จอง' : 'ปล่อย';
+      const isAvailable = seatStatus[seat.id] === "available";
+      const action = isAvailable ? "จอง" : "ปล่อย";
+
       if (
         window.confirm(
           `คุณต้องการ${action} โต๊ะ #${seat.id} (Zone ${seat.zone}) หรือไม่?`
         )
       ) {
-        if (seatStatus[seat.id] === 'available') {
-          await axios.patch(`http://localhost:3000/seats/${seat.id}/book`);
+        if (isAvailable) {
+          await axios.patch(`http://localhost:3000/seats/${seat.id}`, {
+            status: "UNAVAILABLE",
+          });
         } else {
-          await axios.patch(`http://localhost:3000/seats/${seat.id}/release`);
+          await axios.patch(`http://localhost:3000/seats/${seat.id}`, {
+            status: "AVAILABLE",
+          });
         }
         fetchSeats();
         fetchBookings();
@@ -81,7 +95,7 @@ const BookingsView = () => {
     <div className="space-y-8">
       {/* ปุ่มเลือก Zone */}
       <div className="flex gap-3 mb-6">
-        {["A", "B", "C", "D", "Room"].map((zone) => (
+        {["A", "B", "C", "VIP", "Room"].map((zone) => (
           <button
             key={zone}
             onClick={() => setCurrentZone(zone)}
@@ -108,7 +122,9 @@ const BookingsView = () => {
           </div>
           <div className="text-green-400 font-medium">
             ✅ ว่าง{" "}
-            {zones[currentZone]?.filter((s) => s.status === 'ว่าง').length || 0} โต๊ะ
+            {zones[currentZone]?.filter((s) => s.status === "AVAILABLE")
+              .length || 0}{" "}
+            โต๊ะ
           </div>
         </div>
       </div>
@@ -123,6 +139,7 @@ const BookingsView = () => {
               key={seat.id}
               seat={seat}
               status={seatStatus[seat.id]}
+              displayStatus={displayStatus[seat.status]}
               handleSeatClick={() => handleSeatClick(seat)}
             />
           ))}

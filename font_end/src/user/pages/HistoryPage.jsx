@@ -36,12 +36,12 @@ const HistoryPage = () => {
           id: `booking-${b.id}`,
           type: "booking",
           date: b.date,
-          startTime: b.startTime || "-",
-          endTime: b.endTime || "-",
+          startTime: b.startTime,
+          endTime: b.endTime,
           duration: b.duration,
           seat: b.seat?.zone + b.seat?.id,
           price: b.price,
-          status: b.status,
+          status: b.status, // ✅ ใช้ enum จาก backend (ACTIVE, COMPLETED, CANCELLED)
           paymentMethod: b.paymentMethod,
           game: b.game || "-",
         }));
@@ -54,7 +54,7 @@ const HistoryPage = () => {
 
     fetchHistory();
 
-    // ✅ mock orders (แทนของจริงก่อน)
+    // ✅ mock orders
     setFoodOrders([
       {
         id: "food-1",
@@ -100,10 +100,10 @@ const HistoryPage = () => {
     if (selectedFilter !== "all") {
       if (selectedFilter === "completed") {
         filtered = filtered.filter(
-          (item) => item.status === "completed" || item.status === "delivered"
+          (item) => item.status === "COMPLETED" || item.status === "delivered"
         );
       } else if (selectedFilter === "cancelled") {
-        filtered = filtered.filter((item) => item.status === "cancelled");
+        filtered = filtered.filter((item) => item.status === "CANCELLED");
       } else {
         filtered = filtered.filter((item) => item.type === selectedFilter);
       }
@@ -136,19 +136,54 @@ const HistoryPage = () => {
     0
   );
   const completedBookings = bookings.filter(
-    (item) => item.status === "completed"
+    (item) => item.status === "COMPLETED"
   ).length;
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "completed":
+      case "COMPLETED":
       case "delivered":
         return "text-green-400 bg-green-500/20";
-      case "cancelled":
+      case "CANCELLED":
         return "text-red-400 bg-red-500/20";
-      default:
+      case "ACTIVE":
         return "text-yellow-400 bg-yellow-500/20";
+      default:
+        return "text-slate-400 bg-slate-600/20";
     }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case "COMPLETED":
+        return "เสร็จสิ้น";
+      case "delivered":
+        return "จัดส่งแล้ว";
+      case "CANCELLED":
+        return "ยกเลิกแล้ว";
+      case "ACTIVE":
+        return "กำลังใช้งาน";
+      default:
+        return status;
+    }
+  };
+
+  // ✅ format วันที่/เวลา
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "-";
+    return new Date(dateStr).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (dateStr) => {
+    if (!dateStr) return "-";
+    return new Date(dateStr).toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   const BookingCard = ({ item }) => (
@@ -168,18 +203,18 @@ const HistoryPage = () => {
             item.status
           )}`}
         >
-          {item.status}
+          {getStatusText(item.status)}
         </span>
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-slate-300">
         <div className="flex items-center gap-2">
           <Calendar size={16} />
-          {new Date(item.date).toLocaleDateString("th-TH")}
+          {formatDate(item.date)}
         </div>
         <div className="flex items-center gap-2">
           <Clock size={16} />
-          {item.startTime} - {item.endTime}
+          {formatTime(item.startTime)} - {formatTime(item.endTime)}
         </div>
         <div className="flex items-center gap-2">
           <CreditCard size={16} />
@@ -199,7 +234,7 @@ const HistoryPage = () => {
             item.status
           )}`}
         >
-          {item.status}
+          {getStatusText(item.status)}
         </span>
       </div>
 
@@ -216,7 +251,7 @@ const HistoryPage = () => {
 
       <div className="flex justify-between items-center text-sm text-slate-300">
         <Calendar size={16} />
-        {new Date(item.date).toLocaleDateString("th-TH")} {item.orderTime}
+        {formatDate(item.date)} {item.orderTime}
         <span className="text-orange-400 font-bold">
           รวม {item.totalPrice}฿
         </span>
@@ -262,7 +297,7 @@ const HistoryPage = () => {
               key={key}
               onClick={() => {
                 setSelectedFilter(key);
-                setVisibleCount(pageSize); // reset pagination
+                setVisibleCount(pageSize);
               }}
               className={`px-4 py-2 rounded-xl text-sm ${
                 selectedFilter === key
@@ -287,7 +322,7 @@ const HistoryPage = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setVisibleCount(pageSize); // reset pagination
+              setVisibleCount(pageSize);
             }}
             className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-purple-400"
           />

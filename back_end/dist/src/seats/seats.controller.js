@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SeatsController = void 0;
 const common_1 = require("@nestjs/common");
 const seats_service_1 = require("./seats.service");
+const client_1 = require("@prisma/client");
 let SeatsController = class SeatsController {
     seatsService;
     constructor(seatsService) {
@@ -35,11 +36,14 @@ let SeatsController = class SeatsController {
     remove(id) {
         return this.seatsService.remove(+id);
     }
+    updateStatus(id, status) {
+        return this.seatsService.updateStatus(id, status);
+    }
     bookSeat(id) {
-        return this.seatsService.updateStatus(id, 'ไม่ว่าง');
+        return this.seatsService.updateStatus(id, client_1.SeatStatus.UNAVAILABLE);
     }
     releaseSeat(id) {
-        return this.seatsService.updateStatus(id, 'ว่าง');
+        return this.seatsService.updateStatus(id, client_1.SeatStatus.AVAILABLE);
     }
 };
 exports.SeatsController = SeatsController;
@@ -78,6 +82,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], SeatsController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)('status')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:returntype", void 0)
+], SeatsController.prototype, "updateStatus", null);
 __decorate([
     (0, common_1.Patch)(':id/book'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

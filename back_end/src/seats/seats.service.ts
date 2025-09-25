@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { SeatStatus, BookingStatus } from '@prisma/client'; // ✅ import enums
 
 @Injectable()
 export class SeatsService {
@@ -25,10 +26,27 @@ export class SeatsService {
     return this.prisma.seat.delete({ where: { id } });
   }
 
-  async updateStatus(id: number, status: string) {
+  async updateStatus(id: number, status: SeatStatus) {
+    const validStatuses = [
+      SeatStatus.AVAILABLE,
+      SeatStatus.UNAVAILABLE,
+      SeatStatus.MAINTENANCE,
+    ];
+    if (!validStatuses.includes(status)) {
+      throw new Error(`Invalid status: ${status}`);
+    }
+
+    // ถ้า Admin รีเซ็ตเก้าอี้เป็น AVAILABLE → ยกเลิกการจองเก่า
+    if (status === SeatStatus.AVAILABLE) {
+      await this.prisma.booking.updateMany({
+        where: { seatId: id, status: BookingStatus.ACTIVE },
+        data: { status: BookingStatus.CANCELLED },
+      });
+    }
+
     return this.prisma.seat.update({
-        where: { id },
-        data: { status },
+      where: { id },
+      data: { status },
     });
   }
 }

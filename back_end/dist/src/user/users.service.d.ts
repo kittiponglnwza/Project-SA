@@ -3,58 +3,57 @@ export declare class UsersService {
     private prisma;
     constructor(prisma: PrismaService);
     findAll(): import("@prisma/client").Prisma.PrismaPromise<{
-        id: number;
         email: string;
         name: string;
         password: string;
         role: string;
         createdAt: Date;
+        id: number;
     }[]>;
     findOne(id: number): import("@prisma/client").Prisma.Prisma__UserClient<({
         bookings: ({
             seat: {
-                id: number;
                 createdAt: Date;
-                status: string;
+                id: number;
                 zone: string;
                 type: string;
-                condition: string;
+                status: import("@prisma/client").$Enums.SeatStatus;
                 updatedAt: Date;
             };
         } & {
             id: number;
-            userId: number;
+            status: import("@prisma/client").$Enums.BookingStatus;
             seatId: number;
             date: Date;
             duration: number;
             price: number;
-            status: string;
-            startTime: string | null;
-            endTime: string | null;
+            startTime: Date | null;
+            endTime: Date | null;
             paymentMethod: string | null;
+            userId: number;
         })[];
     } & {
-        id: number;
         email: string;
         name: string;
         password: string;
         role: string;
         createdAt: Date;
+        id: number;
     }) | null, null, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
     update(id: number, data: any): import("@prisma/client").Prisma.Prisma__UserClient<{
-        id: number;
         email: string;
         name: string;
         password: string;
         role: string;
         createdAt: Date;
+        id: number;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
     remove(id: number): import("@prisma/client").Prisma.Prisma__UserClient<{
-        id: number;
         email: string;
         name: string;
         password: string;
         role: string;
         createdAt: Date;
+        id: number;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
 }

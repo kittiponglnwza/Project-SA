@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
+import { BookingStatus } from '@prisma/client';
+
 
 @Controller('bookings')
 export class BookingsController {
@@ -32,7 +34,10 @@ export class BookingsController {
   }
 
   @Patch(':id/status')
-  updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
+  updateStatus(
+    @Param('id') id: string,
+    @Body() body: { status: BookingStatus }, // ✅ ใช้ enum
+  ) {
     return this.bookingsService.updateStatus(Number(id), body.status);
   }
 }

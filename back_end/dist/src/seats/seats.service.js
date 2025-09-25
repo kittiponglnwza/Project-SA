@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SeatsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const client_1 = require("@prisma/client");
 let SeatsService = class SeatsService {
     prisma;
     constructor(prisma) {
@@ -33,6 +34,20 @@ let SeatsService = class SeatsService {
         return this.prisma.seat.delete({ where: { id } });
     }
     async updateStatus(id, status) {
+        const validStatuses = [
+            client_1.SeatStatus.AVAILABLE,
+            client_1.SeatStatus.UNAVAILABLE,
+            client_1.SeatStatus.MAINTENANCE,
+        ];
+        if (!validStatuses.includes(status)) {
+            throw new Error(`Invalid status: ${status}`);
+        }
+        if (status === client_1.SeatStatus.AVAILABLE) {
+            await this.prisma.booking.updateMany({
+                where: { seatId: id, status: client_1.BookingStatus.ACTIVE },
+                data: { status: client_1.BookingStatus.CANCELLED },
+            });
+        }
         return this.prisma.seat.update({
             where: { id },
             data: { status },

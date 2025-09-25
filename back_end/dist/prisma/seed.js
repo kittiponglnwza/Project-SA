@@ -7,37 +7,30 @@ async function main() {
         ...Array.from({ length: 10 }, (_, i) => ({
             zone: 'A',
             type: i % 2 === 0 ? 'เดี่ยว' : 'คู่',
-            status: 'ว่าง',
-            condition: 'ดีเยี่ยม',
+            status: client_1.SeatStatus.AVAILABLE,
         })),
         ...Array.from({ length: 8 }, (_, i) => ({
             zone: 'B',
             type: i % 2 === 0 ? 'เดี่ยว' : 'คู่',
-            status: 'ว่าง',
-            condition: 'ดีเยี่ยม',
+            status: client_1.SeatStatus.AVAILABLE,
         })),
         ...Array.from({ length: 6 }, (_, i) => ({
             zone: 'C',
             type: i % 2 === 0 ? 'เดี่ยว' : 'คู่',
-            status: 'ว่าง',
-            condition: 'ดีเยี่ยม',
+            status: client_1.SeatStatus.AVAILABLE,
         })),
-        ...Array.from({ length: 4 }, (_, i) => ({
+        ...Array.from({ length: 4 }, () => ({
             zone: 'VIP',
             type: 'คู่',
-            status: 'ว่าง',
-            condition: 'ดีเยี่ยม',
+            status: client_1.SeatStatus.AVAILABLE,
         })),
-        ...Array.from({ length: 2 }, (_, i) => ({
+        ...Array.from({ length: 2 }, () => ({
             zone: 'Room',
             type: 'ห้องส่วนตัว',
-            status: 'ว่าง',
-            condition: 'ดีเยี่ยม',
+            status: client_1.SeatStatus.AVAILABLE,
         })),
     ];
-    await prisma.seat.createMany({
-        data: seats,
-    });
+    await prisma.seat.createMany({ data: seats });
     console.log('✅ Seeding สำเร็จ! สร้างโต๊ะทั้งหมดแล้ว');
 }
 main()

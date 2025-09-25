@@ -1,6 +1,16 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Patch, ParseIntPipe } from '@nestjs/common';
-
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Patch,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { SeatsService } from './seats.service';
+import { SeatStatus } from '@prisma/client'; // ✅ import enum
 
 @Controller('seats')
 export class SeatsController {
@@ -30,13 +40,24 @@ export class SeatsController {
   remove(@Param('id') id: string) {
     return this.seatsService.remove(+id);
   }
+
+  // ✅ เปลี่ยนสถานะด้วย enum
+  @Patch(':id')
+  updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status') status: SeatStatus, // 👈 ใช้ enum
+  ) {
+    return this.seatsService.updateStatus(id, status);
+  }
+
+  // ✅ ถ้าอยากเก็บ route เดิมไว้ (เช่นจอง/ปล่อยโต๊ะ)
   @Patch(':id/book')
-    bookSeat(@Param('id', ParseIntPipe) id: number) {
-    return this.seatsService.updateStatus(id, 'ไม่ว่าง'); // หรือ 'occupied'
+  bookSeat(@Param('id', ParseIntPipe) id: number) {
+    return this.seatsService.updateStatus(id, SeatStatus.UNAVAILABLE);
   }
 
   @Patch(':id/release')
-    releaseSeat(@Param('id', ParseIntPipe) id: number) {
-    return this.seatsService.updateStatus(id, 'ว่าง'); // หรือ 'available'
+  releaseSeat(@Param('id', ParseIntPipe) id: number) {
+    return this.seatsService.updateStatus(id, SeatStatus.AVAILABLE);
   }
 }

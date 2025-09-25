@@ -55,11 +55,11 @@ const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
     }
 
     //offline test
-    if (loginForm.username === "Nomojuro@gmail.com" && loginForm.password === "1234") {
-      showAlert("success", "เข้าสู่ระบบ(mock)");
-      onLoginSuccess()
-      return;
-    }
+    // if (loginForm.username === "Nomojuro@gmail.com" && loginForm.password === "1234") {
+    //   showAlert("success", "เข้าสู่ระบบ(mock)");
+    //   onLoginSuccess()
+    //   return;
+    // }
 
     setLoading(true);
     try {

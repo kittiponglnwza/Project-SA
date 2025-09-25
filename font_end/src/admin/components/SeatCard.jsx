@@ -4,8 +4,18 @@ import { Users } from 'lucide-react';
 const SeatCard = ({ seat, handleSeatClick }) => {
   const isVIP = seat.zone === 'VIP';
   const isRoom = seat.zone === 'Room';
-  const isAvailable = seat.status === 'ว่าง';
-  const isMaintenance = seat.status === 'ซ่อมบำรุง';
+
+  // ✅ ใช้ enum จาก backend
+  const isAvailable = seat.status === 'AVAILABLE';
+  const isMaintenance = seat.status === 'MAINTENANCE';
+  const isUnavailable = seat.status === 'UNAVAILABLE';
+
+  // ✅ Map แสดงผลเป็นภาษาไทย
+  const statusText = {
+    AVAILABLE: 'ใช้งานได้',
+    UNAVAILABLE: 'ใช้งานไม่ได้',
+    MAINTENANCE: 'ซ่อมแซม',
+  };
 
   return (
     <div
@@ -66,7 +76,7 @@ const SeatCard = ({ seat, handleSeatClick }) => {
           </h3>
           <span
             className={`
-              px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
+              px-3 py-1 rounded-full text-xs font-semibold tracking-wide
               ${
                 isAvailable
                   ? 'bg-green-500 text-white shadow-green-500/30 animate-pulse'
@@ -77,7 +87,7 @@ const SeatCard = ({ seat, handleSeatClick }) => {
               shadow-lg
             `}
           >
-            {seat.status}
+            {statusText[seat.status] || 'ไม่ทราบ'}
           </span>
         </div>
       </div>

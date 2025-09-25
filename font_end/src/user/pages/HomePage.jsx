@@ -16,14 +16,19 @@ import BlackmythImg from "/photo/blackmyth.jpg";
 
 const HomePage = () => {
   const [availableSeats, setAvailableSeats] = useState(0);
+  const [totalSeats, setTotalSeats] = useState(0);
   const [selectedGame, setSelectedGame] = useState(null);
 
-  // โหลดโต๊ะว่างจาก backend
+  // ✅ โหลดโต๊ะจาก backend
   const fetchSeats = async () => {
     try {
       const res = await axios.get("http://localhost:3000/seats");
       const seats = res.data;
-      const availableCount = seats.filter((s) => s.status === "ว่าง").length;
+
+      setTotalSeats(seats.length);
+
+      // ✅ นับเฉพาะ status = AVAILABLE
+      const availableCount = seats.filter((s) => s.status === "AVAILABLE").length;
       setAvailableSeats(availableCount);
     } catch (err) {
       console.error("Error fetching seats:", err);
@@ -48,9 +53,7 @@ const HomePage = () => {
     { name: "Black Myth: Wukong", players: "40 คนกำลังเล่น", icon: "🐒", image: BlackmythImg },
   ];
 
-  const images = {
-    promo: PromoImg,
-  };
+  const images = { promo: PromoImg };
 
   // เลือกเกม
   const handleGameSelect = (gameName) => {
@@ -110,9 +113,7 @@ const HomePage = () => {
       `}</style>
 
       {/* Particles */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {createParticles()}
-      </div>
+      <div className="fixed inset-0 pointer-events-none z-0">{createParticles()}</div>
 
       <div className="relative z-10">
         {/* Welcome Section */}
@@ -129,9 +130,9 @@ const HomePage = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           {[
             { number: availableSeats, label: "โต๊ะว่าง", icon: <Users className="text-blue-400" size={24} /> },
+            { number: totalSeats, label: "โต๊ะทั้งหมด", icon: <Monitor className="text-orange-400" size={24} /> },
             { number: "50+", label: "เกมยอดนิยม", icon: <Gamepad2 className="text-green-400" size={24} /> },
             { number: "24/7", label: "เปิดบริการ", icon: <Clock className="text-purple-400" size={24} /> },
-            { number: "144Hz", label: "จอเกมมิ่ง", icon: <Monitor className="text-orange-400" size={24} /> },
           ].map((stat, index) => (
             <div
               key={index}
@@ -153,7 +154,6 @@ const HomePage = () => {
 
           <div className="bg-slate-700/95 backdrop-blur-lg rounded-3xl p-8 border border-white/10 shadow-2xl">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
-              
               {/* รูปโปรโมชั่น */}
               <div className="relative group">
                 <img
@@ -187,7 +187,6 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-
 
         {/* Games Section */}
         <section>

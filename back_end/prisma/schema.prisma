@@ -7,40 +7,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum SeatStatus {
+  AVAILABLE     // ใช้งานได้
+  UNAVAILABLE   // ใช้งานไม่ได้
+  MAINTENANCE   // ซ่อมแซม
+}
+
+model Seat {
+  id        Int        @id @default(autoincrement())
+  zone      String
+  type      String
+  status    SeatStatus @default(AVAILABLE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  bookings  Booking[]
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String
   password  String
-  role      String   @default("User")   // ✅ เพิ่ม field นี้
+  role      String   @default("User")
   createdAt DateTime @default(now())
 
-  bookings Booking[]
+  bookings  Booking[]
 }
 
-model Seat {
-  id        Int      @id @default(autoincrement())
-  zone      String // เช่น A, B, C, VIP, Room
-  type      String // เช่น โต๊ะเดี่ยว, โต๊ะคู่
-  status    String // "ว่าง", "ไม่ว่าง", "ซ่อมบำรุง"
-  condition String // "ดีเยี่ยม", "ดี", "ต้องซ่อม"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  bookings Booking[]
+enum BookingStatus {
+  ACTIVE      // กำลังใช้งาน
+  COMPLETED   // เสร็จสิ้น
+  CANCELLED   // ยกเลิก
 }
 
 model Booking {
-  id            Int      @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   userId        Int
   seatId        Int
-  date          DateTime @default(now())
-  duration      Int // ชั่วโมง
+  date          DateTime      @default(now())
+  duration      Int
   price         Int
-  status        String   @default("active") // active, completed, cancelled
-  startTime     String?   // 🕒 เวลาเริ่ม
-  endTime       String?   // 🕒 เวลาสิ้นสุด
-  paymentMethod String?   @default("cash") // cash, qr
+  status        BookingStatus @default(ACTIVE)   // 👈 เปลี่ยนเป็น enum
+  startTime     DateTime?
+  endTime       DateTime?
+  paymentMethod String?
 
   user User @relation(fields: [userId], references: [id])
   seat Seat @relation(fields: [seatId], references: [id])

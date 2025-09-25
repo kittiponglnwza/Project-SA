@@ -12,12 +12,13 @@ const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./user/users.module");
 const seats_module_1 = require("./seats/seats.module");
 const bookings_module_1 = require("./bookings/bookings.module");
+const schedule_1 = require("@nestjs/schedule");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, users_module_1.UsersModule, seats_module_1.SeatsModule, bookings_module_1.BookingsModule],
+        imports: [auth_module_1.AuthModule, users_module_1.UsersModule, seats_module_1.SeatsModule, bookings_module_1.BookingsModule, schedule_1.ScheduleModule.forRoot()],
         controllers: [],
         providers: [],
     })

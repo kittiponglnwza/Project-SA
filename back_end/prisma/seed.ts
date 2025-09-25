@@ -1,50 +1,37 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SeatStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
   const seats = [
-    // Zone A (10 โต๊ะ)
     ...Array.from({ length: 10 }, (_, i) => ({
       zone: 'A',
       type: i % 2 === 0 ? 'เดี่ยว' : 'คู่',
-      status: 'ว่าง',
-      condition: 'ดีเยี่ยม',
+      status: SeatStatus.AVAILABLE,
     })),
-    // Zone B (8 โต๊ะ)
     ...Array.from({ length: 8 }, (_, i) => ({
       zone: 'B',
       type: i % 2 === 0 ? 'เดี่ยว' : 'คู่',
-      status: 'ว่าง',
-      condition: 'ดีเยี่ยม',
+      status: SeatStatus.AVAILABLE,
     })),
-    // Zone C (6 โต๊ะ)
     ...Array.from({ length: 6 }, (_, i) => ({
       zone: 'C',
       type: i % 2 === 0 ? 'เดี่ยว' : 'คู่',
-      status: 'ว่าง',
-      condition: 'ดีเยี่ยม',
+      status: SeatStatus.AVAILABLE,
     })),
-    // Zone VIP (4 โต๊ะ)
-    ...Array.from({ length: 4 }, (_, i) => ({
+    ...Array.from({ length: 4 }, () => ({
       zone: 'VIP',
       type: 'คู่',
-      status: 'ว่าง',
-      condition: 'ดีเยี่ยม',
+      status: SeatStatus.AVAILABLE,
     })),
-    // Zone Room (2 ห้อง)
-    ...Array.from({ length: 2 }, (_, i) => ({
+    ...Array.from({ length: 2 }, () => ({
       zone: 'Room',
       type: 'ห้องส่วนตัว',
-      status: 'ว่าง',
-      condition: 'ดีเยี่ยม',
+      status: SeatStatus.AVAILABLE,
     })),
   ];
 
-  await prisma.seat.createMany({
-    data: seats,
-  });
-
+  await prisma.seat.createMany({ data: seats });
   console.log('✅ Seeding สำเร็จ! สร้างโต๊ะทั้งหมดแล้ว');
 }
 
