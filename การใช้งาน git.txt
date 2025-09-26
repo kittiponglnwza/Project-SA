@@ -63,3 +63,9 @@ git pull origin main
 git add .
 git commit -m "ข้อความ commit"  git commit -m "เพิ่ม admin"
 git push origin main
+
+
+คำสั่งนี้ทำงานดังนี้ แก้ไฟล์ทั้งหมดให้ตรงกับ commit  ทิ้งของเราที่แก้
+git reset --hard : รีเซ็ตทุกไฟล์ให้ตรงกับ commit ล่าสุดที่เรามี (ลบการแก้ไขของเรา)
+git clean -fd : ลบไฟล์/โฟลเดอร์ที่ git ไม่รู้จัก (พวกที่มันฟ้องว่า untracked)
+git pull origin main : ดึงโค้ดใหม่จากเพื่อนเข้ามา
