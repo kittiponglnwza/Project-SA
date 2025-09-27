@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { SeatStatus, BookingStatus } from '@prisma/client'; // ✅ import enums
+import { SeatStatus, BookingStatus } from '@prisma/client';
+import { CreateSeatDto } from './dto/create-seat.dto';
+import { UpdateSeatDto } from './dto/update-seat.dto';
 
 @Injectable()
 export class SeatsService {
@@ -14,11 +16,11 @@ export class SeatsService {
     return this.prisma.seat.findUnique({ where: { id } });
   }
 
-  create(data: any) {
+  create(data: CreateSeatDto) {
     return this.prisma.seat.create({ data });
   }
 
-  update(id: number, data: any) {
+  update(id: number, data: UpdateSeatDto) {
     return this.prisma.seat.update({ where: { id }, data });
   }
 

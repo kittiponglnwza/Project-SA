@@ -16,6 +16,8 @@ exports.SeatsController = void 0;
 const common_1 = require("@nestjs/common");
 const seats_service_1 = require("./seats.service");
 const client_1 = require("@prisma/client");
+const create_seat_dto_1 = require("./dto/create-seat.dto");
+const update_seat_dto_1 = require("./dto/update-seat.dto");
 let SeatsController = class SeatsController {
     seatsService;
     constructor(seatsService) {
@@ -25,16 +27,16 @@ let SeatsController = class SeatsController {
         return this.seatsService.findAll();
     }
     findOne(id) {
-        return this.seatsService.findOne(+id);
+        return this.seatsService.findOne(id);
     }
     create(body) {
         return this.seatsService.create(body);
     }
     update(id, body) {
-        return this.seatsService.update(+id, body);
+        return this.seatsService.update(id, body);
     }
     remove(id) {
-        return this.seatsService.remove(+id);
+        return this.seatsService.remove(id);
     }
     updateStatus(id, status) {
         return this.seatsService.updateStatus(id, status);
@@ -55,31 +57,31 @@ __decorate([
 ], SeatsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], SeatsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_seat_dto_1.CreateSeatDto]),
     __metadata("design:returntype", void 0)
 ], SeatsController.prototype, "create", null);
 __decorate([
     (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [Number, update_seat_dto_1.UpdateSeatDto]),
     __metadata("design:returntype", void 0)
 ], SeatsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], SeatsController.prototype, "remove", null);
 __decorate([

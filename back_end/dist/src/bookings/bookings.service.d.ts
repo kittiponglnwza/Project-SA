@@ -5,54 +5,54 @@ export declare class BookingsService {
     constructor(prisma: PrismaService);
     private updateExpiredBookings;
     findAll(): Promise<({
-        user: {
+        seat: {
+            createdAt: Date;
             id: number;
-            name: string;
+            zone: string;
+            type: string;
+            status: import("@prisma/client").$Enums.SeatStatus;
+            updatedAt: Date;
+        };
+        user: {
             email: string;
+            name: string;
             password: string;
             role: string;
             createdAt: Date;
-        };
-        seat: {
             id: number;
-            status: import("@prisma/client").$Enums.SeatStatus;
-            createdAt: Date;
-            zone: string;
-            type: string;
-            updatedAt: Date;
         };
     } & {
         id: number;
-        userId: number;
+        status: import("@prisma/client").$Enums.BookingStatus;
         seatId: number;
         date: Date;
         duration: number;
         price: number;
-        status: import("@prisma/client").$Enums.BookingStatus;
         startTime: Date | null;
         endTime: Date | null;
         paymentMethod: string | null;
+        userId: number;
     })[]>;
     findByUser(userId: number): Promise<({
         seat: {
-            id: number;
-            status: import("@prisma/client").$Enums.SeatStatus;
             createdAt: Date;
+            id: number;
             zone: string;
             type: string;
+            status: import("@prisma/client").$Enums.SeatStatus;
             updatedAt: Date;
         };
     } & {
         id: number;
-        userId: number;
+        status: import("@prisma/client").$Enums.BookingStatus;
         seatId: number;
         date: Date;
         duration: number;
         price: number;
-        status: import("@prisma/client").$Enums.BookingStatus;
         startTime: Date | null;
         endTime: Date | null;
         paymentMethod: string | null;
+        userId: number;
     })[]>;
     create(data: {
         userId: number;
@@ -64,35 +64,35 @@ export declare class BookingsService {
         paymentMethod?: string;
     }): Promise<{
         seat: {
-            id: number;
-            status: import("@prisma/client").$Enums.SeatStatus;
             createdAt: Date;
+            id: number;
             zone: string;
             type: string;
+            status: import("@prisma/client").$Enums.SeatStatus;
             updatedAt: Date;
         };
     } & {
         id: number;
-        userId: number;
+        status: import("@prisma/client").$Enums.BookingStatus;
         seatId: number;
         date: Date;
         duration: number;
         price: number;
-        status: import("@prisma/client").$Enums.BookingStatus;
         startTime: Date | null;
         endTime: Date | null;
         paymentMethod: string | null;
+        userId: number;
     }>;
     updateStatus(id: number, status: BookingStatus): Promise<{
         id: number;
-        userId: number;
+        status: import("@prisma/client").$Enums.BookingStatus;
         seatId: number;
         date: Date;
         duration: number;
         price: number;
-        status: import("@prisma/client").$Enums.BookingStatus;
         startTime: Date | null;
         endTime: Date | null;
         paymentMethod: string | null;
+        userId: number;
     }>;
 }

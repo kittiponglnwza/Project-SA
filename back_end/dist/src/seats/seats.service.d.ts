@@ -1,5 +1,7 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { SeatStatus } from '@prisma/client';
+import { CreateSeatDto } from './dto/create-seat.dto';
+import { UpdateSeatDto } from './dto/update-seat.dto';
 export declare class SeatsService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -19,7 +21,7 @@ export declare class SeatsService {
         createdAt: Date;
         updatedAt: Date;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
-    create(data: any): import("@prisma/client").Prisma.Prisma__SeatClient<{
+    create(data: CreateSeatDto): import("@prisma/client").Prisma.Prisma__SeatClient<{
         id: number;
         zone: string;
         type: string;
@@ -27,7 +29,7 @@ export declare class SeatsService {
         createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
-    update(id: number, data: any): import("@prisma/client").Prisma.Prisma__SeatClient<{
+    update(id: number, data: UpdateSeatDto): import("@prisma/client").Prisma.Prisma__SeatClient<{
         id: number;
         zone: string;
         type: string;

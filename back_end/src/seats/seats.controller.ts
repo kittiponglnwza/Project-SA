@@ -1,16 +1,18 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
   Put,
   Delete,
   Param,
-  Body,
   Patch,
   ParseIntPipe,
 } from '@nestjs/common';
 import { SeatsService } from './seats.service';
-import { SeatStatus } from '@prisma/client'; // ✅ import enum
+import { SeatStatus } from '@prisma/client';
+import { CreateSeatDto } from './dto/create-seat.dto';
+import { UpdateSeatDto } from './dto/update-seat.dto';
 
 @Controller('seats')
 export class SeatsController {
@@ -22,40 +24,44 @@ export class SeatsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.seatsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.seatsService.findOne(id);
   }
 
   @Post()
-  create(@Body() body: any) {
+  create(@Body() body: CreateSeatDto) {
     return this.seatsService.create(body);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.seatsService.update(+id, body);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateSeatDto,
+  ) {
+    return this.seatsService.update(id, body);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.seatsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.seatsService.remove(id);
   }
 
-  // ✅ เปลี่ยนสถานะด้วย enum
+  // ✅ เปลี่ยนสถานะที่นั่ง
   @Patch(':id')
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
-    @Body('status') status: SeatStatus, // 👈 ใช้ enum
+    @Body('status') status: SeatStatus,
   ) {
     return this.seatsService.updateStatus(id, status);
   }
 
-  // ✅ ถ้าอยากเก็บ route เดิมไว้ (เช่นจอง/ปล่อยโต๊ะ)
+  // ✅ ทางลัด: จอง (set UNAVAILABLE)
   @Patch(':id/book')
   bookSeat(@Param('id', ParseIntPipe) id: number) {
     return this.seatsService.updateStatus(id, SeatStatus.UNAVAILABLE);
   }
 
+  // ✅ ทางลัด: ปล่อย (set AVAILABLE)
   @Patch(':id/release')
   releaseSeat(@Param('id', ParseIntPipe) id: number) {
     return this.seatsService.updateStatus(id, SeatStatus.AVAILABLE);
