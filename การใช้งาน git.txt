@@ -61,7 +61,7 @@ git pull origin main
 
 หลังแก้เสร็จ:
 git add .
-git commit -m "ข้อความ commit"  git commit -m "เพิ่ม admin"
+git commit -m "ข้อความ commit"  git commit -m "เพิ่ม admin ระบบสั่งอาหาร"
 git push origin main
 
 
