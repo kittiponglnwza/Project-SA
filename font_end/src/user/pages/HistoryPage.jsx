@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import axios from "axios";
 
+const API_URL = "http://localhost:3000"; // แก้เป็น backend URL ของคุณ
+
 const HistoryPage = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,12 +29,13 @@ const HistoryPage = () => {
         const userId = localStorage.getItem("userId");
         if (!userId) return;
 
-        const res = await axios.get(
-          `http://localhost:3000/bookings/user/${userId}`,
+        // ✅ ดึง booking
+        const bookingRes = await axios.get(
+          `${API_URL}/bookings/user/${userId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const bookingData = res.data.map((b) => ({
+        const bookingData = bookingRes.data.map((b) => ({
           id: `booking-${b.id}`,
           type: "booking",
           date: b.date,
@@ -41,46 +44,40 @@ const HistoryPage = () => {
           duration: b.duration,
           seat: b.seat?.zone + b.seat?.id,
           price: b.price,
-          status: b.status, // ✅ ใช้ enum จาก backend (ACTIVE, COMPLETED, CANCELLED)
+          status: b.status,
           paymentMethod: b.paymentMethod,
           game: b.game || "-",
         }));
 
         setBookings(bookingData);
+
+        // ✅ ดึง order อาหาร
+        const orderRes = await axios.get(
+          `${API_URL}/orders/user/${userId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const orderData = orderRes.data.map((o) => ({
+          id: `order-${o.id}`,
+          type: "food",
+          date: o.orderDate,
+          orderTime: o.orderDate,
+          items: o.items.map((it) => ({
+            name: it.menu?.name || "ไม่ทราบชื่อ",
+            quantity: it.quantity,
+            price: it.price,
+          })),
+          totalPrice: o.total,
+          status: o.status, // PREPARING, READY, DELIVERED, CANCELLED
+        }));
+
+        setFoodOrders(orderData);
       } catch (err) {
         console.error("Error fetching history:", err);
       }
     };
 
     fetchHistory();
-
-    // ✅ mock orders
-    setFoodOrders([
-      {
-        id: "food-1",
-        type: "food",
-        date: "2025-09-20",
-        orderTime: "15:30",
-        items: [
-          { name: "มันฝรั่งทอด", quantity: 1, price: 35 },
-          { name: "โค้ก", quantity: 2, price: 15 },
-        ],
-        totalPrice: 65,
-        status: "delivered",
-      },
-      {
-        id: "food-2",
-        type: "food",
-        date: "2025-09-18",
-        orderTime: "11:15",
-        items: [
-          { name: "ข้าวผัดไข่", quantity: 1, price: 45 },
-          { name: "กาแฟเย็น", quantity: 1, price: 25 },
-        ],
-        totalPrice: 70,
-        status: "delivered",
-      },
-    ]);
   }, []);
 
   const historyData = [...bookings, ...foodOrders];
@@ -100,10 +97,12 @@ const HistoryPage = () => {
     if (selectedFilter !== "all") {
       if (selectedFilter === "completed") {
         filtered = filtered.filter(
-          (item) => item.status === "COMPLETED" || item.status === "delivered"
+          (item) => item.status === "COMPLETED" || item.status === "DELIVERED"
         );
       } else if (selectedFilter === "cancelled") {
-        filtered = filtered.filter((item) => item.status === "CANCELLED");
+        filtered = filtered.filter(
+          (item) => item.status === "CANCELLED"
+        );
       } else {
         filtered = filtered.filter((item) => item.type === selectedFilter);
       }
@@ -142,12 +141,15 @@ const HistoryPage = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case "COMPLETED":
-      case "delivered":
+      case "DELIVERED":
         return "text-green-400 bg-green-500/20";
       case "CANCELLED":
         return "text-red-400 bg-red-500/20";
       case "ACTIVE":
+      case "PREPARING":
         return "text-yellow-400 bg-yellow-500/20";
+      case "READY":
+        return "text-blue-400 bg-blue-500/20";
       default:
         return "text-slate-400 bg-slate-600/20";
     }
@@ -157,8 +159,12 @@ const HistoryPage = () => {
     switch (status) {
       case "COMPLETED":
         return "เสร็จสิ้น";
-      case "delivered":
+      case "DELIVERED":
         return "จัดส่งแล้ว";
+      case "READY":
+        return "พร้อมเสิร์ฟ";
+      case "PREPARING":
+        return "กำลังเตรียม";
       case "CANCELLED":
         return "ยกเลิกแล้ว";
       case "ACTIVE":
@@ -251,7 +257,7 @@ const HistoryPage = () => {
 
       <div className="flex justify-between items-center text-sm text-slate-300">
         <Calendar size={16} />
-        {formatDate(item.date)} {item.orderTime}
+        {formatDate(item.date)} {formatTime(item.orderTime)}
         <span className="text-orange-400 font-bold">
           รวม {item.totalPrice}฿
         </span>

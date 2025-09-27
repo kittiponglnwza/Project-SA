@@ -268,31 +268,40 @@ const SeatManagementView = () => {
                   </button>
                   <button
                     onClick={() => {
-                      updateSeatStatus(seat.id, "AVAILABLE");
+                      if (window.confirm("คุณแน่ใจหรือไม่ว่าจะตั้งเป็นใช้งานได้?")) {
+                        updateSeatStatus(seat.id, "AVAILABLE");
+                      }
                       setOpenMenuId(null);
                     }}
                     className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-slate-700 text-white"
                   >
                     ✅ ตั้งเป็นใช้งานได้
                   </button>
+
                   <button
                     onClick={() => {
-                      updateSeatStatus(seat.id, "UNAVAILABLE");
+                      if (window.confirm("คุณแน่ใจหรือไม่ว่าจะตั้งเป็นใช้งานไม่ได้?")) {
+                        updateSeatStatus(seat.id, "UNAVAILABLE");
+                      }
                       setOpenMenuId(null);
                     }}
                     className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-slate-700 text-white"
                   >
                     ❌ ตั้งเป็นใช้งานไม่ได้
                   </button>
+
                   <button
                     onClick={() => {
-                      updateSeatStatus(seat.id, "MAINTENANCE");
+                      if (window.confirm("คุณแน่ใจหรือไม่ว่าจะตั้งเป็นซ่อมแซม?")) {
+                        updateSeatStatus(seat.id, "MAINTENANCE");
+                      }
                       setOpenMenuId(null);
                     }}
                     className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-slate-700 text-white"
                   >
                     🔧 ตั้งเป็นซ่อมแซม
                   </button>
+
                 </div>
               )}
             </div>

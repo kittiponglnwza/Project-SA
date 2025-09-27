@@ -1,0 +1,97 @@
+import { PromotionService } from './promotion.service';
+import { CreatePromotionDto } from './dto/create-promotion.dto';
+import { UpdatePromotionDto } from './dto/update-promotion.dto';
+export declare class PromotionController {
+    private readonly promotionService;
+    constructor(promotionService: PromotionService);
+    create(dto: CreatePromotionDto): Promise<{
+        name: string;
+        description: string | null;
+        type: string;
+        discount: number;
+        category: string | null;
+        items: import("@prisma/client/runtime/library").JsonValue | null;
+        startTime: string | null;
+        endTime: string | null;
+        validDays: import("@prisma/client/runtime/library").JsonValue | null;
+        isActive: boolean;
+        icon: string | null;
+        createdAt: Date;
+        id: number;
+    }>;
+    findAll(): Promise<{
+        name: string;
+        description: string | null;
+        type: string;
+        discount: number;
+        category: string | null;
+        items: import("@prisma/client/runtime/library").JsonValue | null;
+        startTime: string | null;
+        endTime: string | null;
+        validDays: import("@prisma/client/runtime/library").JsonValue | null;
+        isActive: boolean;
+        icon: string | null;
+        createdAt: Date;
+        id: number;
+    }[]>;
+    findAllActive(): Promise<{
+        name: string;
+        description: string | null;
+        type: string;
+        discount: number;
+        category: string | null;
+        items: import("@prisma/client/runtime/library").JsonValue | null;
+        startTime: string | null;
+        endTime: string | null;
+        validDays: import("@prisma/client/runtime/library").JsonValue | null;
+        isActive: boolean;
+        icon: string | null;
+        createdAt: Date;
+        id: number;
+    }[]>;
+    findOne(id: string): Promise<{
+        name: string;
+        description: string | null;
+        type: string;
+        discount: number;
+        category: string | null;
+        items: import("@prisma/client/runtime/library").JsonValue | null;
+        startTime: string | null;
+        endTime: string | null;
+        validDays: import("@prisma/client/runtime/library").JsonValue | null;
+        isActive: boolean;
+        icon: string | null;
+        createdAt: Date;
+        id: number;
+    } | null>;
+    update(id: string, dto: UpdatePromotionDto): Promise<{
+        name: string;
+        description: string | null;
+        type: string;
+        discount: number;
+        category: string | null;
+        items: import("@prisma/client/runtime/library").JsonValue | null;
+        startTime: string | null;
+        endTime: string | null;
+        validDays: import("@prisma/client/runtime/library").JsonValue | null;
+        isActive: boolean;
+        icon: string | null;
+        createdAt: Date;
+        id: number;
+    }>;
+    remove(id: string): Promise<{
+        name: string;
+        description: string | null;
+        type: string;
+        discount: number;
+        category: string | null;
+        items: import("@prisma/client/runtime/library").JsonValue | null;
+        startTime: string | null;
+        endTime: string | null;
+        validDays: import("@prisma/client/runtime/library").JsonValue | null;
+        isActive: boolean;
+        icon: string | null;
+        createdAt: Date;
+        id: number;
+    }>;
+}

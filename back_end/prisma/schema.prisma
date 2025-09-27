@@ -7,12 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//
+// ENUMS
+//
 enum SeatStatus {
-  AVAILABLE     // ใช้งานได้
-  UNAVAILABLE   // ใช้งานไม่ได้
-  MAINTENANCE   // ซ่อมแซม
+  AVAILABLE
+  UNAVAILABLE
+  MAINTENANCE
 }
 
+enum BookingStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum OrderStatus {
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+//
+// MODELS
+//
 model Seat {
   id        Int        @id @default(autoincrement())
   zone      String
@@ -20,7 +39,9 @@ model Seat {
   status    SeatStatus @default(AVAILABLE)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+
   bookings  Booking[]
+  orders    Order[]
 }
 
 model User {
@@ -32,12 +53,7 @@ model User {
   createdAt DateTime @default(now())
 
   bookings  Booking[]
-}
-
-enum BookingStatus {
-  ACTIVE      // กำลังใช้งาน
-  COMPLETED   // เสร็จสิ้น
-  CANCELLED   // ยกเลิก
+  orders    Order[]
 }
 
 model Booking {
@@ -47,7 +63,7 @@ model Booking {
   date          DateTime      @default(now())
   duration      Int
   price         Int
-  status        BookingStatus @default(ACTIVE)   // 👈 เปลี่ยนเป็น enum
+  status        BookingStatus @default(ACTIVE)
   startTime     DateTime?
   endTime       DateTime?
   paymentMethod String?
@@ -56,3 +72,65 @@ model Booking {
   seat Seat @relation(fields: [seatId], references: [id])
 }
 
+model Menu {
+  id           Int       @id @default(autoincrement())
+  name         String
+  price        Float
+  category     String
+  description  String?
+  image        String?
+  rating       Float     @default(0)
+  hasPromo     Boolean   @default(false)
+  hasHappyHour Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  items OrderItem[]
+}
+
+model Order {
+  id            Int          @id @default(autoincrement())
+  orderNumber   String       @unique
+  customerName  String
+  seatId        Int?
+  userId        Int?
+  status        OrderStatus  @default(PREPARING)
+  total         Float
+  notes         String?
+  paymentMethod String
+  orderDate     DateTime     @default(now())
+
+  seat   Seat? @relation(fields: [seatId], references: [id])
+  user   User? @relation(fields: [userId], references: [id])
+
+  items  OrderItem[]
+}
+
+model OrderItem {
+  id       Int    @id @default(autoincrement())
+  orderId  Int
+  menuId   Int
+  quantity Int
+  price    Float
+
+  order Order @relation(fields: [orderId], references: [id])
+  menu  Menu  @relation(fields: [menuId], references: [id])
+}
+
+//
+// NEW MODEL: Promotion
+//
+model Promotion {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  type        String   // เช่น category, combo, amount, quantity, happyHour
+  discount    Float
+  category    String?
+  items       Json?
+  startTime   String?
+  endTime     String?
+  validDays   Json?
+  isActive    Boolean  @default(true)
+  icon        String?
+  createdAt   DateTime @default(now())
+}

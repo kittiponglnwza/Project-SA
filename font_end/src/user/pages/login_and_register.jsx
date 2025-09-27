@@ -47,19 +47,19 @@ const GamingAuth = ({ onLoginSuccess, onAdminLogin }) => {
       return;
     }
 
-    // // offline mock
-     if (loginForm.username === "admin@game.com" && loginForm.password === "515") {
-       showAlert("success", "เข้าสู่ระบบผู้ดูแลระบบ (mock)");
-       onAdminLogin();
-       return;
-     }
+    // // // offline mock
+    //  if (loginForm.username === "admin@game.com" && loginForm.password === "515") {
+    //    showAlert("success", "เข้าสู่ระบบผู้ดูแลระบบ (mock)");
+    //    onAdminLogin();
+    //    return;
+    //  }
 
-    // //offline test
-      if (loginForm.username === "Nomojuro@gmail.com" && loginForm.password === "1234") {
-        showAlert("success", "เข้าสู่ระบบ(mock)");
-        onLoginSuccess()
-        return;
-      }
+    // // //offline test
+    //   if (loginForm.username === "Nomojuro@gmail.com" && loginForm.password === "1234") {
+    //     showAlert("success", "เข้าสู่ระบบ(mock)");
+    //     onLoginSuccess()
+    //     return;
+    //   }
 
     setLoading(true);
     try {
